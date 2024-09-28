@@ -19,7 +19,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         if (response.ok) {
             // Si la autenticación es exitosa, mostrar el nombre completo en un mensaje
-            alert(`Bienvenido, ${data.nombre_completo}`); // Mostrar el nombre completo
+            alert(`Bienvenido, ${data.nombre_completo}`); // Corregido: Interpolación adecuada
             window.location.href = "home.html"; // Redirigir a home.html
         } else {
             // Mostrar el mensaje de error que viene desde el servidor
