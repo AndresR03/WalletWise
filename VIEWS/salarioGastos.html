@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/salarioGastos.css">
+    <title>Salarios y Gastos</title>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button">← Volver</button>
+        <h1>Salarios y Gastos</h1>
+
+        <form id="salary-form"> <!-- Formulario para el salario -->
+            <div class="salary-section">
+                <label for="salary">Ingresar salario</label>
+                <input type="number" id="salary" placeholder="0" required>
+            </div>
+        </form>
+
+        <div class="categories-section">
+            <h2>Categorías</h2>
+        
+            <div id="categories-list"> <!-- Contenedor para las categorías -->
+                <form id="categories-form"> <!-- Formulario para las categorías -->
+                    <div class="category">
+                        <label for="food">Comida <span>🍽️</span></label>
+                        <input type="number" id="food" placeholder="0" required>
+                    </div>
+        
+                    <div class="category">
+                        <label for="clothes">Ropa <span>👚</span></label>
+                        <input type="number" id="clothes" placeholder="0" required>
+                    </div>
+        
+                    <div class="category">
+                        <label for="transport">Transporte <span>🚌</span></label>
+                        <input type="number" id="transport" placeholder="0" required>
+                    </div>
+                </form> <!-- Fin del formulario para las categorías -->
+            </div> <!-- Fin del contenedor para las categorías -->
+        
+            <div class="add-category">
+                <label for="new-category">Añadir categoría</label>
+                <div class="input-group">
+                    <input type="text" id="new-category" placeholder="Nueva categoría">
+                    <button id="add-category-button">Agregar</button>
+                </div>
+            </div>
+        
+            <button class="save-button" id="save-button">GUARDAR</button>
+        </div>
+
+    </div>
+    <script src="../backend/CONTROLLERS/salarioGastos.js"></script>
+</body>
+</html>
