@@ -86,33 +86,34 @@ h1 {
 
 .add-category {
     margin-top: 20px; /* Espacio superior */
+    text-align: center; /* Centra el contenido dentro del contenedor */
 }
 
-.input-group {
-    display: flex; /* Usa flexbox para alinear el input y el botón */
-    align-items: center; /* Centra verticalmente el contenido */
+.add-category input {
+    width: 80%; /* Establece un ancho para el input */
+    margin-bottom: 10px; /* Espacio inferior entre el input y el botón */
 }
 
-.input-group input {
-    flex: 1; /* El input ocupa todo el espacio disponible */
-    padding: 10px; /* Espaciado interno */
-    border-radius: 5px 0 0 5px; /* Bordes redondeados en la izquierda */
-    border: 1px solid #ccc; /* Bordes para el input */
-    font-size: 16px; /* Tamaño de fuente */
-}
-
-.input-group button {
-    padding: 10px 15px; /* Espaciado interno */
-    border-radius: 0 5px 5px 0; /* Bordes redondeados en la derecha */
+.add-category button {
+    padding: 10px 20px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
     border: none; /* Sin borde */
     background-color: yellow; /* Color de fondo */
     color: black; /* Color de texto */
     font-size: 16px; /* Tamaño de fuente */
     cursor: pointer; /* Cambia el cursor al pasar el mouse */
     transition: background-color 0.3s; /* Efecto de transición */
+    width: auto; /* Elimina el ancho fijo del 80% */
+    display: inline-block; /* Ancho del botón para que coincida con el input */
 }
 
-.input-group button:hover {
-    background-color: yellow    ; /* Cambia el color de fondo al pasar el mouse */
+.add-category button:hover {
+    background-color: yellow; /* Cambia el color de fondo al pasar el mouse */
+}
+
+
+.save-button {
+    margin-top: 20px; /* Espacio superior para separar del botón de agregar */
+    padding: 10px 20px; /* Ajusta el padding si es necesario */
 }
 
