@@ -20,7 +20,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
         confirmar_password: confirmarPassword,
         aceptar_terminos: aceptarTerminos 
     };
-
+ 
     try {
     
         const response = await fetch('http://localhost:3000/register', {

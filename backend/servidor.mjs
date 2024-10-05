@@ -85,6 +85,22 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Ruta para guardar información financiera
+app.post('/guardar-informacion-financiera', async (req, res) => {
+    const { usuario_id, salario, comida, ropa, transporte, otras_categorias } = req.body;
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [usuario_id, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
+        );
+        res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
+    } catch (error) {
+        console.error('Error al guardar información financiera:', error);
+        res.status(500).json({ error: 'Error al guardar información financiera' });
+    }
+});
+
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));

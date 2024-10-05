@@ -1,40 +1,45 @@
-document.getElementById('add-category-button').addEventListener('click', function() {
-    const newCategoryName = document.getElementById('new-category').value;
-    const newCategoryValue = '0'; // Valor inicial para la nueva categoría
+document.getElementById('save-button').addEventListener('click', async function(event) {
+    event.preventDefault();
 
-    // Verificar que la categoría no esté vacía
-    if (newCategoryName.trim() !== '') {
-        // Crear un nuevo div para la nueva categoría
-        const newCategoryDiv = document.createElement('div');
-        newCategoryDiv.className = 'category';
+    const usuarioId = 1; // Aquí debes asignar el ID del usuario que está autenticado
+    const salario = document.getElementById('salary').value;
+    const comida = document.getElementById('food').value;
+    const ropa = document.getElementById('clothes').value;
+    const transporte = document.getElementById('transport').value;
 
-        // Crear el formulario para la nueva categoría
-        const newCategoryForm = document.createElement('form'); // Nuevo formulario
-        newCategoryForm.id = newCategoryName.toLowerCase().replace(/\s+/g, '-') + '-form'; // ID único para el formulario
+    const otrasCategorias = {};
+    document.querySelectorAll('#categories-list input').forEach(input => {
+        if (!['food', 'clothes', 'transport'].includes(input.id)) {
+            otrasCategorias[input.id] = input.value;
+        }
+    });
 
-        // Crear la etiqueta con el nombre de la nueva categoría
-        const newLabel = document.createElement('label');
-        newLabel.textContent = newCategoryName + ' ';
-        newLabel.innerHTML += '<span>🆕</span>'; // Un icono para la nueva categoría
+    const data = {
+        usuario_id: usuarioId,
+        salario: salario,
+        comida: comida,
+        ropa: ropa,
+        transporte: transporte,
+        otras_categorias: otrasCategorias
+    };
 
-        // Crear el input para la nueva categoría
-        const newInput = document.createElement('input');
-        newInput.type = 'number'; // Cambié el tipo a 'number' para mantener la consistencia
-        newInput.placeholder = newCategoryValue;
+    try {
+        const response = await fetch('http://localhost:3000/informacion-financiera', { // Cambiado aquí
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
 
-        // Agregar la etiqueta y el input al nuevo formulario
-        newCategoryForm.appendChild(newLabel);
-        newCategoryForm.appendChild(newInput);
-
-        // Agregar el nuevo formulario de categoría al div
-        newCategoryDiv.appendChild(newCategoryForm);
-
-        // Agregar el nuevo div de categoría al contenedor de categorías
-        document.getElementById('categories-list').appendChild(newCategoryDiv);
-
-        // Limpiar el campo de entrada
-        document.getElementById('new-category').value = '';
-    } else {
-        alert('Por favor, ingresa un nombre para la nueva categoría.');
+        const result = await response.json();
+        if (response.ok) {
+            alert('Información financiera guardada exitosamente');
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error al guardar la información financiera:', error);
+        alert('Error al guardar la información financiera, intenta nuevamente.');
     }
 });
