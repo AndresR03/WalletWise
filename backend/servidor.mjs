@@ -1,16 +1,18 @@
-require('dotenv').config(); // Cargar variables de entorno desde .env
+import { validarUsuario } from './MODELS/usuModles.mjs';
+import pkg from 'pg'; // Importación del módulo pg
+const { Pool } = pkg; // Desestructuración para obtener la clase Pool
+import bcrypt from 'bcryptjs';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv'; // Importar dotenv para cargar variables de entorno
 
-const express = require('express');
-const pg = require('pg');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
+dotenv.config(); // Cargar variables de entorno desde .env
 
 const app = express();
 app.use(cors()); // Habilitar CORS
 
 // Configurar PostgreSQL con variables de entorno
-const pool = new pg.Pool({
+const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
@@ -23,23 +25,34 @@ app.use(express.json());
 
 // Ruta para registrar usuario
 app.post('/register', async (req, res) => {
-    const { nombre_completo, correo_electronico, numero_telefono, password, confirmar_password } = req.body;
+    const { 
+        nombre_completo, 
+        correo_electronico, 
+        numero_telefono, 
+        password, 
+        confirmar_password, 
+        aceptar_terminos 
+    } = req.body; 
 
     console.log('Datos de registro recibidos:', req.body);
 
-    if (password !== confirmar_password) {
-        return res.status(400).json({ message: 'Las contraseñas no coinciden' });
+    // Validar los datos del usuario
+    const validation = validarUsuario(req.body);
+    if (!validation.valid) {
+        return res.status(400).json({ message: validation.message });
     }
 
+    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
         const result = await pool.query(
-            'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password) VALUES ($1, $2, $3, $4) RETURNING *',
-            [nombre_completo, correo_electronico, numero_telefono, hashedPassword]
+            'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password, aceptar_terminos) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos] // Incluir aceptar_terminos en el arreglo de valores
         );
         res.status(201).json({ message: 'Usuario registrado exitosamente', user: result.rows[0] });
     } catch (error) {
+        console.error('Error al registrar usuario:', error);
         res.status(500).json({ error: 'Error al registrar usuario' });
     }
 });
@@ -61,9 +74,13 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
 
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Inicio de sesión exitoso', token });
+        // Generar un token JWT (si decides implementar autenticación JWT)
+        // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // res.status(200).json({ message: 'Inicio de sesión exitoso', token });
+
+        res.status(200).json({ message: 'Inicio de sesión exitoso' }); // Cambiar esto si decides implementar JWT
     } catch (error) {
+        console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
 });

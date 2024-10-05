@@ -96,3 +96,22 @@ input {
     text-decoration: underline;
 }
 
+.terminos {
+    display: flex;
+    align-items: center; /* Alinea el checkbox y el texto verticalmente */
+    justify-content: center; /* Centra el contenido */
+    margin-top: 10px; /* Espaciado superior */
+}
+
+.terminos label {
+    display: flex;
+    align-items: center;
+    color: white; /* Color blanco para el texto */
+    font-size: 0.9rem; /* Ajuste de tamaño del texto */
+}
+
+.terminos input[type="checkbox"] {
+    margin-right: 8px; /* Espacio entre el checkbox y el texto */
+    width: 20px; /* Ajusta el tamaño del checkbox */
+    height: 20px; /* Ajusta el tamaño del checkbox */
+}

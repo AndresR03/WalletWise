@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Wallet Wise</title>
+    <link rel="stylesheet" type="text/css" href="./css/stylesRegistro.css">
+</head>
+<body>
+    <div class="container">
+        <img src="img/logo_app.jpg" alt="Logo de Wallet Wise" class="logo">
+        <h1>Wallet Wise</h1>
+        <form id="registro-form">
+            <input type="text" name="nombre_completo" placeholder="Nombre completo" required aria-label="Nombre completo">
+            <input type="email" name="correo_electronico" placeholder="Correo Electrónico" required aria-label="Correo Electrónico">
+            <input type="tel" name="numero_telefono" placeholder="Número de Teléfono" required aria-label="Número de Teléfono">
+            <input type="password" name="password" placeholder="Contraseña" required aria-label="Contraseña">
+            <input type="password" name="confirmar_password" placeholder="Confirmar contraseña" required aria-label="Confirmar contraseña">
+
+            <div class="terminos">
+                <label for="aceptar_terminos">
+                    <input type="checkbox" id="aceptar_terminos" name="aceptar_terminos" required> 
+                    Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>
+                </label>
+            </div>
+            
+            <button type="submit" class="button">Guardar</button>
+        </form>
+
+        <p class="register-text">¿Ya tienes cuenta? <a href="login.html" style="color: #FFC107;">Inicia sesión</a></p>
+    </div>
+
+    <p class="back-link"><a href="index.html">Volver</a></p>
+
+    <script src="../backend/CONTROLLERS/Registro.js"></script>
+</body>
+</html>

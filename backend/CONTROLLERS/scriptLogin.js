@@ -29,4 +29,4 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         console.error('Error:', error); // Mostrar error en la consola
         alert('Hubo un error en el servidor. Inténtalo más tarde.');
     }
-});
+}); 
