@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #0a54a0;
+    background: linear-gradient(to bottom, #1D4273 10%, #1D4273 20%, #121D53 70%);
     color: white;
     display: flex;
     justify-content: center;
@@ -15,11 +15,12 @@ body {
 }
 
 .container {
-    width: 350px;
+    width: 500px;  /* Aumentamos el ancho del contenedor */
     background-color: #1c3e7b;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-x: auto;
 }
 
 .back-button {
@@ -57,15 +58,10 @@ body {
     font-weight: bold;
 }
 
-.salary-section input {
-    width: 80%;
-    padding: 10px;
+.salary-section p {
     margin-top: 10px;
-    border-radius: 10px;
-    border: none;
-    background-color: #e0e0e0;
-    color: #333;
     font-size: 16px;
+    color: #e0e0e0;
 }
 
 .expenses-section {
@@ -80,6 +76,7 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;  /* Permite que las columnas se ajusten según el contenido */
 }
 
 table th, table td {
@@ -87,4 +84,8 @@ table th, table td {
     padding: 8px;
     text-align: center;
     font-size: 14px;
+}
+
+table th {
+    white-space: nowrap;  /* Evita que el texto de los encabezados se divida en líneas */
 }
