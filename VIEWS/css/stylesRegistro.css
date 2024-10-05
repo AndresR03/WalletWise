@@ -56,6 +56,23 @@ input {
     color: #FFC107;
 }
 
+.password-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.password-container button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: #FFC107;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
 .button {
     background-color: #FFC107;
     border: none;
@@ -72,7 +89,6 @@ input {
     background-color: #FFA000;
 }
 
-/* Enlace de volver */
 .back-link {
     margin-top: 20px;
     font-size: 0.9em;
@@ -87,8 +103,9 @@ input {
 .back-link a:hover {
     text-decoration: underline;
 }
+
 .register-text a {
-    color: #FFC107; /* Color naranja */
+    color: #FFC107;
     text-decoration: none;
 }
 
@@ -98,20 +115,20 @@ input {
 
 .terminos {
     display: flex;
-    align-items: center; /* Alinea el checkbox y el texto verticalmente */
-    justify-content: center; /* Centra el contenido */
-    margin-top: 10px; /* Espaciado superior */
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .terminos label {
     display: flex;
     align-items: center;
-    color: white; /* Color blanco para el texto */
-    font-size: 0.9rem; /* Ajuste de tamaño del texto */
+    color: white;
+    font-size: 0.9rem;
 }
 
 .terminos input[type="checkbox"] {
-    margin-right: 8px; /* Espacio entre el checkbox y el texto */
-    width: 20px; /* Ajusta el tamaño del checkbox */
-    height: 20px; /* Ajusta el tamaño del checkbox */
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
 }
