@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recomendaciones</title>
+<link rel="stylesheet" href="./css/recomendaciones.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+    
+    <a href="#" class="back-button" onclick="goBack()">← Volver</a>
+    
+    <h1 class="title">Recomendaciones</h1>
+
+
+    <div class="chart">
+    <canvas id="myPieChart"></canvas>
+    </div>
+
+    <div class="recommendacion">
+    <h2>Recomendación</h2>
+
+    <div class="recommendacion-box">
+        <p id="recommendacion-text">Nuestra recomendación es:</p>
+    </div>
+    </div>
+
+
+    <div class="more-details">
+    <button onclick="goToDetails()">Ver más detalles</button>
+    </div>
+</div>
+
+<script src="../backend/CONTROLLERS/recomendacionscript.js"></script>
+</body>
+</html>

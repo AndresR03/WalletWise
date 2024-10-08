@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista de Recomendaciones</title>
+    <link rel="stylesheet" href="./css/diseñorecomen.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="content-box">
+            <header>
+                <button class="back-button" onclick="goBack()">← Volver</button>
+                <img src="./img/logo_app.jpg" alt="Logo" class="logo">
+            </header>
+
+            <h1 class="title">Vista Gráfica de Recomendaciones</h1> 
+
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <div class="legend">
+                <p>
+                    <span class="color-box" style="background-color: #FF6384;"></span> 
+                    Transporte 35%
+                </p>
+                <p>
+                    <span class="color-box" style="background-color: #36A2EB;"></span> 
+                    Comida 25%
+                </p>
+                <p>
+                    <span class="color-box" style="background-color: #FFCE56;"></span> 
+                    Ropa 25%
+                </p>
+                <p>
+                    <span class="color-box" style="background-color: #4BC0C0;"></span> 
+                    Otros 15%
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../backend/CONTROLLERS/scriptrecomen.js"></script>
+</body>
+</html>
