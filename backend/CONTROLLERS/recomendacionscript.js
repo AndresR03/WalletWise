@@ -3,7 +3,7 @@ function goBack() {
     window.history.back();
 }
 
- 
+
 function goToDetails() {
     window.location.href = 'vistarecomen.html';  
 }

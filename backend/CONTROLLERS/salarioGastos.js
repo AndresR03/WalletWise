@@ -1,3 +1,6 @@
+function goBack() {
+    window.history.back();
+}
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
