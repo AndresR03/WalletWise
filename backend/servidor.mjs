@@ -1,4 +1,5 @@
-import { validarUsuario } from './MODELS/usuModels.mjs'; // Asegúrate de que el nombre del archivo sea correcto
+import { validarUsuario } from './MODELS/usuModels.mjs';
+// Asegúrate de que el nombre del archivo sea correcto
 import pkg from 'pg'; // Importación del módulo pg
 const { Pool } = pkg; // Desestructuración para obtener la clase Pool
 import bcrypt from 'bcryptjs';
@@ -51,6 +52,11 @@ app.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Ya existe un usuario registrado con este correo electrónico o número de teléfono' });
         }
 
+        // Verificar si las contraseñas coinciden
+        if (password !== confirmar_password) {
+            return res.status(400).json({ message: 'Las contraseñas no coinciden' });
+        }
+
         // Hash de la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -92,28 +98,28 @@ app.post('/login', async (req, res) => {
 
 // Ruta para guardar información financiera
 app.post('/guardar-informacion-financiera', async (req, res) => {
-    const { usuario_email, salario, comida, ropa, transporte, otras_categorias } = req.body;
+    const { usuario_id, salario, comida, ropa, transporte, otras_categorias } = req.body;
 
     try {
-        // Verificar si ya existe un registro para el correo electrónico del usuario
+        // Verificar si ya existe un registro para el id del usuario
         const existingRecord = await pool.query(
-            'SELECT * FROM informacion_financiera WHERE usuario_email = $1',
-            [usuario_email]
+            'SELECT * FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
         );
 
         if (existingRecord.rows.length > 0) {
-            // Si ya existe, puedes actualizar el registro existente
+            // Si ya existe, actualizar el registro existente
             const result = await pool.query(
-                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otras_categorias = $5 WHERE usuario_email = $6 RETURNING *',
-                [salario, comida, ropa, transporte, JSON.stringify(otras_categorias), usuario_email]
+                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otras_categorias = $5 WHERE usuario_id = $6 RETURNING *',
+                [salario, comida, ropa, transporte, JSON.stringify(otras_categorias), usuario_id]
             );
             return res.status(200).json({ message: 'Información financiera actualizada exitosamente', data: result.rows[0] });
         }
 
         // Si no existe, insertar un nuevo registro
         const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_email, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [usuario_email, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
+            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [usuario_id, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
         );
 
         res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });

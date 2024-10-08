@@ -1,7 +1,7 @@
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    const usuarioEmail = 'user@example.com'; // Cambiar para obtener el correo electrónico del usuario autenticado
+    const usuarioId = 1; // Cambiar esto para obtener el ID del usuario autenticado dinámicamente
     const salario = document.getElementById('salary').value;
     const comida = document.getElementById('food').value;
     const ropa = document.getElementById('clothes').value;
@@ -15,7 +15,7 @@ document.getElementById('save-button').addEventListener('click', async function(
     });
 
     const data = {
-        usuario_email: usuarioEmail,
+        usuario_id: usuarioId, // Cambiado de usuario_email a usuario_id
         salario: salario,
         comida: comida,
         ropa: ropa,
