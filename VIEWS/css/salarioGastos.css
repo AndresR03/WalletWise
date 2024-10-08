@@ -111,9 +111,7 @@ h1 {
     background-color: yellow; /* Cambia el color de fondo al pasar el mouse */
 }
 
-
 .save-button {
     margin-top: 20px; /* Espacio superior para separar del botón de agregar */
     padding: 10px 20px; /* Ajusta el padding si es necesario */
 }
-

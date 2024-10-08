@@ -1,7 +1,7 @@
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    const usuarioId = 1; // Aquí debes asignar el ID del usuario que está autenticado
+    const usuarioEmail = 'user@example.com'; // Cambiar para obtener el correo electrónico del usuario autenticado
     const salario = document.getElementById('salary').value;
     const comida = document.getElementById('food').value;
     const ropa = document.getElementById('clothes').value;
@@ -15,7 +15,7 @@ document.getElementById('save-button').addEventListener('click', async function(
     });
 
     const data = {
-        usuario_id: usuarioId,
+        usuario_email: usuarioEmail,
         salario: salario,
         comida: comida,
         ropa: ropa,
@@ -24,7 +24,7 @@ document.getElementById('save-button').addEventListener('click', async function(
     };
 
     try {
-        const response = await fetch('http://localhost:3000/informacion-financiera', { // Cambiado aquí
+        const response = await fetch('http://localhost:3000/guardar-informacion-financiera', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,5 +41,38 @@ document.getElementById('save-button').addEventListener('click', async function(
     } catch (error) {
         console.error('Error al guardar la información financiera:', error);
         alert('Error al guardar la información financiera, intenta nuevamente.');
+    }
+});
+
+// Agregar un nuevo evento para el botón de agregar categoría
+document.getElementById('add-category-button').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del botón
+
+    const newCategoryInput = document.getElementById('new-category');
+    const categoryName = newCategoryInput.value.trim(); // Obtener el nombre de la nueva categoría
+
+    if (categoryName) {
+        // Crear un nuevo elemento de categoría
+        const newCategoryDiv = document.createElement('div');
+        newCategoryDiv.classList.add('category');
+
+        const newCategoryLabel = document.createElement('label');
+        newCategoryLabel.textContent = categoryName + ' ';
+        
+        const newCategoryInputElement = document.createElement('input');
+        newCategoryInputElement.type = 'number';
+        newCategoryInputElement.id = categoryName.toLowerCase().replace(/ /g, '-'); // Asignar un id basado en el nombre
+        newCategoryInputElement.placeholder = '0';
+        
+        // Agregar la etiqueta y el input al div
+        newCategoryDiv.appendChild(newCategoryLabel);
+        newCategoryDiv.appendChild(newCategoryInputElement);
+
+        // Agregar el nuevo div al contenedor de categorías
+        document.getElementById('categories-list').appendChild(newCategoryDiv);
+        
+        newCategoryInput.value = ''; // Limpiar el campo de entrada
+    } else {
+        alert('Por favor, ingrese un nombre para la nueva categoría');
     }
 });

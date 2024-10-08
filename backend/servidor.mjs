@@ -1,4 +1,4 @@
-import { validarUsuario } from './MODELS/usuModles.mjs';
+import { validarUsuario } from './MODELS/usuModels.mjs'; // Asegúrate de que el nombre del archivo sea correcto
 import pkg from 'pg'; // Importación del módulo pg
 const { Pool } = pkg; // Desestructuración para obtener la clase Pool
 import bcrypt from 'bcryptjs';
@@ -10,6 +10,7 @@ dotenv.config(); // Cargar variables de entorno desde .env
 
 const app = express();
 app.use(cors()); // Habilitar CORS
+app.use(express.json()); // Middleware para parsear JSON
 
 // Configurar PostgreSQL con variables de entorno
 const pool = new Pool({
@@ -19,9 +20,6 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
 });
-
-// Middleware para parsear JSON
-app.use(express.json());
 
 // Ruta para registrar usuario
 app.post('/register', async (req, res) => {
@@ -42,14 +40,25 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: validation.message });
     }
 
-    // Hash de la contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     try {
+        // Verificar si el usuario ya existe
+        const existingUser = await pool.query(
+            'SELECT * FROM usuarios WHERE correo_electronico = $1 OR numero_telefono = $2',
+            [correo_electronico, numero_telefono]
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ message: 'Ya existe un usuario registrado con este correo electrónico o número de teléfono' });
+        }
+
+        // Hash de la contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const result = await pool.query(
             'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password, aceptar_terminos) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos] // Incluir aceptar_terminos en el arreglo de valores
         );
+
         res.status(201).json({ message: 'Usuario registrado exitosamente', user: result.rows[0] });
     } catch (error) {
         console.error('Error al registrar usuario:', error);
@@ -74,11 +83,7 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
 
-        // Generar un token JWT (si decides implementar autenticación JWT)
-        // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        // res.status(200).json({ message: 'Inicio de sesión exitoso', token });
-
-        res.status(200).json({ message: 'Inicio de sesión exitoso' }); // Cambiar esto si decides implementar JWT
+        res.status(200).json({ message: 'Inicio de sesión exitoso', user: { id: user.id, nombre: user.nombre_completo } }); // Puedes incluir más datos del usuario aquí
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error al iniciar sesión' });
@@ -87,15 +92,37 @@ app.post('/login', async (req, res) => {
 
 // Ruta para guardar información financiera
 app.post('/guardar-informacion-financiera', async (req, res) => {
-    const { usuario_id, salario, comida, ropa, transporte, otras_categorias } = req.body;
+    const { usuario_email, salario, comida, ropa, transporte, otras_categorias } = req.body;
 
     try {
-        const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [usuario_id, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
+        // Verificar si ya existe un registro para el correo electrónico del usuario
+        const existingRecord = await pool.query(
+            'SELECT * FROM informacion_financiera WHERE usuario_email = $1',
+            [usuario_email]
         );
+
+        if (existingRecord.rows.length > 0) {
+            // Si ya existe, puedes actualizar el registro existente
+            const result = await pool.query(
+                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otras_categorias = $5 WHERE usuario_email = $6 RETURNING *',
+                [salario, comida, ropa, transporte, JSON.stringify(otras_categorias), usuario_email]
+            );
+            return res.status(200).json({ message: 'Información financiera actualizada exitosamente', data: result.rows[0] });
+        }
+
+        // Si no existe, insertar un nuevo registro
+        const result = await pool.query(
+            'INSERT INTO informacion_financiera (usuario_email, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [usuario_email, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
+        );
+
         res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
     } catch (error) {
+        // Manejar error de duplicado
+        if (error.code === '23505') { // Código de error de violación de unicidad
+            return res.status(400).json({ message: 'Ya existe un registro de información financiera para este usuario.' });
+        }
+
         console.error('Error al guardar información financiera:', error);
         res.status(500).json({ error: 'Error al guardar información financiera' });
     }
