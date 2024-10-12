@@ -128,6 +128,30 @@ app.post('/guardar-informacion-financiera', async (req, res) => {
     }
 });
 
+
+
+app.get('/informacion-financiera/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
+        );
+
+        if (result.rows.length > 0) {
+            const { comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 } = result.rows[0];
+            res.status(200).json({ comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 });
+        } else {
+            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
+        }
+    } catch (error) {
+        console.error('Error al obtener información financiera:', error);
+        res.status(500).json({ error: 'Error al obtener información financiera' });
+    }
+});
+
+
+
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
