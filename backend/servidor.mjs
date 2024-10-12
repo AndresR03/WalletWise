@@ -1,5 +1,4 @@
 import { validarUsuario } from './MODELS/usuModels.mjs';
-// Asegúrate de que el nombre del archivo sea correcto
 import pkg from 'pg'; // Importación del módulo pg
 const { Pool } = pkg; // Desestructuración para obtener la clase Pool
 import bcrypt from 'bcryptjs';
@@ -98,7 +97,7 @@ app.post('/login', async (req, res) => {
 
 // Ruta para guardar información financiera
 app.post('/guardar-informacion-financiera', async (req, res) => {
-    const { usuario_id, salario, comida, ropa, transporte, otras_categorias } = req.body;
+    const { usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3 } = req.body;
 
     try {
         // Verificar si ya existe un registro para el id del usuario
@@ -110,16 +109,16 @@ app.post('/guardar-informacion-financiera', async (req, res) => {
         if (existingRecord.rows.length > 0) {
             // Si ya existe, actualizar el registro existente
             const result = await pool.query(
-                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otras_categorias = $5 WHERE usuario_id = $6 RETURNING *',
-                [salario, comida, ropa, transporte, JSON.stringify(otras_categorias), usuario_id]
+                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otra_categoria_1 = $5, otra_categoria_2 = $6, otra_categoria_3 = $7 WHERE usuario_id = $8 RETURNING *',
+                [salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3, usuario_id]
             );
             return res.status(200).json({ message: 'Información financiera actualizada exitosamente', data: result.rows[0] });
         }
 
         // Si no existe, insertar un nuevo registro
         const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otras_categorias) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [usuario_id, salario, comida, ropa, transporte, JSON.stringify(otras_categorias)]
+            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+            [usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3]
         );
 
         res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
