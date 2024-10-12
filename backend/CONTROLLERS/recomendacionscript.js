@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const myPieChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Comida', 'Ropa', 'Transporte', 'Otro1', 'Otro2', 'Otro3'],
+                    labels: ['Comida', 'Ropa', 'Transporte', 'OtraCat1', 'OtraCat2', 'OtraCat3'],
                     datasets: [{
                         data: [comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3],
                         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733', '#33FF57', '#3357FF'],

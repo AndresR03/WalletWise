@@ -8,8 +8,8 @@
 </head>
 <body>
     <div class="container">
-        <a href="#" class="back-button" onclick="goBack()">← Volver</a>
-        <h1>Salarios y Gastos</h1>
+        <button class="back-button">← Volver</button>
+        <h1>Salario y Gastos</h1>
 
         <form id="salary-form"> <!-- Formulario para el salario -->
             <div class="salary-section">
@@ -24,7 +24,7 @@
             <div id="categories-list"> <!-- Contenedor para las categorías -->
                 <form id="categories-form"> <!-- Formulario para las categorías -->
                     <div class="category">
-                        <label for="food">Comida <span>🍽️</span></label>
+                        <label for="food">Comida <span>🍽</span></label>
                         <input type="number" id="food" placeholder="0" required>
                     </div>
         
@@ -34,17 +34,26 @@
                     </div>
         
                     <div class="category">
-                        <label for="transport">Transporte <span>🚌</span></label>
+                        <label for="transport">Transporte<span>🚌</span></label>
                         <input type="number" id="transport" placeholder="0" required>
+                    </div>
+
+                    <div class="category">
+                        <label for="category1">Otra categoría 1 <span>1️⃣</span></label>
+                        <input type="number" id="category1" placeholder="0" required>
+                    </div>
+
+                    <div class="category">
+                        <label for="category2">Otra categoría 2 <span>2️⃣</span></label>
+                        <input type="number" id="category2" placeholder="0" required>
+                    </div>
+
+                    <div class="category">
+                        <label for="category3">Otra categoria 3 <span>3️⃣</span></label>
+                        <input type="number" id="category3" placeholder="0" required>
                     </div>
                 </form> <!-- Fin del formulario para las categorías -->
             </div> <!-- Fin del contenedor para las categorías -->
-        
-            <div class="add-category">
-                <label for="new-category">Añadir categoría</label>
-                <input type="text" id="new-category" placeholder="Nueva categoría">
-                <button id="add-category-button">Agregar</button>
-            </div>
             
             <button class="save-button" id="save-button">GUARDAR</button>
         </div>
