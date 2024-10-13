@@ -61,7 +61,7 @@ app.post('/register', async (req, res) => {
 
         const result = await pool.query(
             'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password, aceptar_terminos) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos] // Incluir aceptar_terminos en el arreglo de valores
+            [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos]
         );
 
         res.status(201).json({ message: 'Usuario registrado exitosamente', user: result.rows[0] });
@@ -88,7 +88,8 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
 
-        res.status(200).json({ message: 'Inicio de sesión exitoso', user: { id: user.id, nombre: user.nombre_completo } }); // Puedes incluir más datos del usuario aquí
+        // Respuesta con el nombre completo
+        res.status(200).json({ message: 'Inicio de sesión exitoso', nombre_completo: user.nombre_completo });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error al iniciar sesión' });
@@ -117,13 +118,12 @@ app.post('/guardar-informacion-financiera', async (req, res) => {
 
         // Si no existe, insertar un nuevo registro
         const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
             [usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3]
         );
 
         res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
     } catch (error) {
-        // Manejar error de duplicado
         if (error.code === '23505') { // Código de error de violación de unicidad
             return res.status(400).json({ message: 'Ya existe un registro de información financiera para este usuario.' });
         }
@@ -133,6 +133,7 @@ app.post('/guardar-informacion-financiera', async (req, res) => {
     }
 });
 
+// Ruta para obtener información financiera por usuario
 app.get('/informacion-financiera/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
     try {
@@ -152,8 +153,6 @@ app.get('/informacion-financiera/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener información financiera' });
     }
 });
-
-
 
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;
