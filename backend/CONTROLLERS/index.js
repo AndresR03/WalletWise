@@ -20,3 +20,4 @@ document.getElementById('registerBtn').addEventListener('click', function() {
     .then(data => alert(data.message))
     .catch(error => console.error('Error:', error));
 });
+//hola
