@@ -77,7 +77,7 @@ function updateTable() {
 }
 
 document.querySelector('.back-button').addEventListener('click', () => {
-    alert('Volver clicked');
+    window.location.href = "home.html";
 });
 
 updateChart(); // Generar gráfico al cargar la página

@@ -9,5 +9,5 @@ document.getElementById('user-link').addEventListener('click', function(e) {
 
 document.getElementById('balance-link').addEventListener('click', function(e) {
     e.preventDefault(); // Evita que se recargue la página
-    window.location.href = "balance_semanal.html"; // Redirige a balance_semanal.html
+    window.location.href = "balance.html"; // Redirige a balance_semanal.html
 });
