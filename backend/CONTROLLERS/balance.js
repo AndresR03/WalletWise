@@ -1,13 +1,29 @@
-const initialData = [
-    { name: 'Transporte', value: 5, icon: '🚗' },
-    { name: 'Comida', value: 15, icon: '🍽️' },
-    { name: 'Ropa', value: 25, icon: '👚' },
-    { name: 'Otros', value: 15, icon: '📦' }
-];
+// Datos financieros
+let data = [];
 
-let data = [...initialData];
+// Obtener datos financieros desde el backend
+const obtenerDatosFinancieros = async (usuario_id) => {
+    try {
+        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuario_id}`);
+        const porcentajes = await response.json();
+        
+        // Procesar datos para crear el formato que se necesita
+        return [
+            { name: 'Transporte', value: porcentajes.transporte, icon: '🚗' },
+            { name: 'Comida', value: porcentajes.comida, icon: '🍽️' },
+            { name: 'Ropa', value: porcentajes.ropa, icon: '👚' },
+            { name: 'Otros', value: porcentajes.otra_categoria_1 + porcentajes.otra_categoria_2 + porcentajes.otra_categoria_3, icon: '📦' }
+        ];
+    } catch (error) {
+        console.error('Error al obtener datos financieros:', error);
+        return [];
+    }
+};
 
-function updateChart() {
+// Función para actualizar el gráfico
+const updateChart = async (usuario_id) => {
+    data = await obtenerDatosFinancieros(usuario_id);
+
     const width = 300;
     const height = 200;
     const margin = { top: 20, right: 20, bottom: 30, left: 40 };
@@ -28,7 +44,7 @@ function updateChart() {
         .range([height - margin.bottom, margin.top]);
 
     x.domain(data.map(d => d.name));
-    y.domain([0, d3.max(data, d => d.value)]);
+    y.domain([0, 100]); // Mantenemos el dominio de 0 a 100 para porcentajes
 
     // Ejes
     svg.append("g")
@@ -37,7 +53,7 @@ function updateChart() {
 
     svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).ticks(5).tickFormat(d => `${d}%`));
 
     // Barras con los colores previos
     svg.selectAll(".bar")
@@ -57,7 +73,7 @@ function updateChart() {
             }
         });
 
-    updateTable(); // Llamada para generar la tabla después del gráfico
+    updateTable();
 }
 
 function updateTable() {
@@ -67,6 +83,8 @@ function updateTable() {
     // Crear una nueva fila para cada elemento en los datos
     data.forEach(item => {
         const row = document.createElement('tr');
+        
+        // El valor ya está redondeado, solo lo mostramos
         row.innerHTML = `
             <td>${item.icon}</td>
             <td>${item.name}</td>
@@ -76,8 +94,11 @@ function updateTable() {
     });
 }
 
+// Evento para el botón de volver
 document.querySelector('.back-button').addEventListener('click', () => {
-    window.location.href = "home.html";
+    alert('Volver clicked');
 });
 
-updateChart(); // Generar gráfico al cargar la página
+// Iniciar el gráfico al cargar la página
+// Cambia '1' por el ID del usuario correspondiente cuando se carga la página
+updateChart(1);
