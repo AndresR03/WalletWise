@@ -13,24 +13,11 @@ body {
     border-radius: 10px;
     padding: 20px;
     width: 90%;
-    max-width: 400px;
+    max-width: 600px; /* Aumenté el ancho máximo */
 }
 
 #chart {
     margin-bottom: 20px;
-}
-
-#add-category {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-#add-category input {
-    margin-right: 10px;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
 }
 
 button {
@@ -63,4 +50,10 @@ th {
 
 td {
     background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+img {
+    vertical-align: middle;
+    max-width: 30px;
 }
