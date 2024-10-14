@@ -153,6 +153,34 @@ app.get('/informacion-financiera/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener información financiera' });
     }
 });
+app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
+
+    try {
+        const result = await pool.query(
+            'SELECT salario, comida, ropa, transporte FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
+        );
+
+        if (result.rows.length > 0) {
+            const { salario, comida, ropa, transporte } = result.rows[0];
+
+            const porcentajes = {
+                porcentajeComida: ((comida / salario) * 100).toFixed(2),
+                porcentajeRopa: ((ropa / salario) * 100).toFixed(2),
+                porcentajeTransporte: ((transporte / salario) * 100).toFixed(2),
+                porcentajeOtros: ((comida + ropa + transporte) / salario) * 100
+            };
+
+            res.status(200).json(porcentajes);
+        } else {
+            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
+        }
+    } catch (error) {
+        console.error('Error al obtener porcentajes de gasto:', error);
+        res.status(500).json({ error: 'Error al obtener porcentajes de gasto' });
+    }
+});
 
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;
