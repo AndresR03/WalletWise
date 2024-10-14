@@ -10,13 +10,17 @@
     <div class="container">
         <button class="back-button">Volver</button>
         <h1>Vista Balance Semanal</h1>
-        <div id="chart"></div>
+        
+        <!-- Gráfico -->
+        <svg id="chart" width="500" height="300"></svg>
+
+        <!-- Tabla -->
         <table>
             <thead>
                 <tr>
                     <th>Icono</th>
                     <th>Categoría</th>
-                    <th>Porcentaje</th>
+                    <th>Dinero Gastado</th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -24,6 +28,7 @@
             </tbody>
         </table>
     </div>
+    
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="../backend/CONTROLLERS/balance.js"></script>
 </body>

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const usuarioId = 1; // Cambia esto por el id real del usuario
 
     try {
-        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`);
+        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`)
         const data = await response.json();
         console.log(data); // Verifica los datos aquí
 
@@ -47,6 +47,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error al realizar la solicitud:', error);
     }
 });
-
-
-window.onload = drawChart;
