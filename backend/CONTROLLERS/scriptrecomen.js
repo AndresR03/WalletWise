@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         datasets: [{
             label: 'Categorías',
             data: [transporte, comida, ropa, otra_categoria_1, otra_categoria_2, otra_categoria_3],
-            backgroundColor: ['#ff6666', '#ffcc99', '#ffff99', '#666699', '#ffccff', '#ff9900'],
+            backgroundColor: ['#FFCE56', '#FF6384', '#36A2EB', '#FF5733', '#33FF57', '#3357FF'],
             hoverOffset: 4
         }]
     };
@@ -67,12 +67,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     const legendHTML = `
-        <p><span class="color-box" style="background-color: #ff6666;"></span> Transporte ${transportePorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffcc99;"></span> Comida ${comidaPorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffff99;"></span> Ropa ${ropaPorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #666699;"></span> otra_categoria_1 ${otros1Porcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffccff;"></span> otra_categoria_2 ${otros2Porcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ff9900;"></span> otra_categoria_3 ${otros3Porcentaje}%</p>
+        <p><span class="color-box" style="background-color: #FFCE56;"></span> Transporte ${transportePorcentaje}%</p>
+        <p><span class="color-box" style="background-color: #FF6384;"></span> Comida ${comidaPorcentaje}%</p>
+        <p><span class="color-box" style="background-color: #36A2EB;"></span> Ropa ${ropaPorcentaje}%</p>
+        <p><span class="color-box" style="background-color: #FF5733;"></span> otra_categoria_1 ${otros1Porcentaje}%</p>
+        <p><span class="color-box" style="background-color: #33FF57;"></span> otra_categoria_2 ${otros2Porcentaje}%</p>
+        <p><span class="color-box" style="background-color: #3357FF;"></span> otra_categoria_3 ${otros3Porcentaje}%</p>
     `;
 
     document.querySelector('.legend').innerHTML = legendHTML;
