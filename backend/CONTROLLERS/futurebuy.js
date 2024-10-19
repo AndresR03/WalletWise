@@ -1,9 +1,12 @@
 document.getElementById("calcular").addEventListener("click", async function () {
     const precioObjetivo = parseFloat(document.getElementById("precio").value);
     const fecha = document.getElementById("fecha").value;
+    
     const usuarioId = 1; // Cambia esto por el ID del usuario que necesitas
 
     if (isNaN(precioObjetivo) || !fecha) {
+      alert("Por favor, ingresa todos los datos.");
+      return;
         alert("Por favor, ingresa todos los datos.");
         return;
     }
@@ -74,4 +77,5 @@ document.getElementById("calcular").addEventListener("click", async function () 
         
         tabla.appendChild(fila);
     }
-});
+  });
+  
