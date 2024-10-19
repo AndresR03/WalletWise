@@ -1,22 +1,30 @@
 document.getElementById("calcular").addEventListener("click", async function () {
     const precioObjetivo = parseFloat(document.getElementById("precio").value);
     const fecha = document.getElementById("fecha").value;
-    const usuarioId = 1; // Cambia esto por el ID del usuario que necesitas
 
+    // Obtener dinámicamente el ID del usuario autenticado
+    const usuarioId = 1;
+    
+    // Validar que los valores no sean inválidos
     if (isNaN(precioObjetivo) || !fecha) {
-        alert("Por favor, ingresa todos los datos.");
+        alert("Por favor, ingresa todos los datos correctamente.");
         return;
     }
 
     // Obtener el salario desde el backend
     let salario;
     try {
-        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`);
+        const response = await fetch(`http://localhost:3000/informacion-financiera-salario2/${usuarioId}`);
         const data = await response.json();
-        
-        // Verifica si hay un error en la respuesta
-        if (response.ok) {
+
+        // Verifica si hay un error en la respuesta y si el salario es válido
+        if (response.ok && data.salario) {
             salario = parseFloat(data.salario);
+
+            // Validar si el salario obtenido es un número
+            if (isNaN(salario)) {
+                throw new Error('Salario no es un número válido');
+            }
         } else {
             throw new Error(data.message || 'Error al obtener los datos');
         }
@@ -36,28 +44,6 @@ document.getElementById("calcular").addEventListener("click", async function () 
     for (let dia = 1; dia <= 30; dia++) {
         acumulado += ahorroDiario;
 
-        // Detener si se alcanza o supera el precio objetivo
-        if (acumulado >= precioObjetivo) {
-            // Crear la fila para el último día
-            const fila = document.createElement("tr");
-            const columnaDia = document.createElement("td");
-            const columnaAhorro = document.createElement("td");
-            const columnaAcumulado = document.createElement("td");
-
-            columnaDia.textContent = dia;
-            columnaAhorro.textContent = ahorroDiario.toFixed(2);
-            columnaAcumulado.textContent = acumulado.toFixed(2);
-
-            fila.appendChild(columnaDia);
-            fila.appendChild(columnaAhorro);
-            fila.appendChild(columnaAcumulado);
-            
-            tabla.appendChild(fila);
-
-            // Salir del bucle si se ha alcanzado el precio objetivo
-            break;
-        }
-
         // Crear la fila para los días antes de alcanzar el precio objetivo
         const fila = document.createElement("tr");
         const columnaDia = document.createElement("td");
@@ -71,7 +57,12 @@ document.getElementById("calcular").addEventListener("click", async function () 
         fila.appendChild(columnaDia);
         fila.appendChild(columnaAhorro);
         fila.appendChild(columnaAcumulado);
-        
+
         tabla.appendChild(fila);
+
+        // Detener si se alcanza o supera el precio objetivo
+        if (acumulado >= precioObjetivo) {
+            break;
+        }
     }
 });

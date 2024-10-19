@@ -21,7 +21,7 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
-// Ruta para registrar usuario (ya existente)
+// Ruta para registrar usuario
 app.post('/register', async (req, res) => {
     const { 
         nombre_completo, 
@@ -71,7 +71,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Ruta para iniciar sesión (ya existente)
+// Ruta para iniciar sesión
 app.post('/login', async (req, res) => {
     const { correo_electronico, password } = req.body;
 
@@ -96,7 +96,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Ruta para guardar información financiera (ya existente)
+// Ruta para guardar información financiera
 app.post('/guardar-informacion-financiera', async (req, res) => {
     const { usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3 } = req.body;
 
@@ -133,7 +133,7 @@ app.post('/guardar-informacion-financiera', async (req, res) => {
     }
 });
 
-// Ruta para obtener información financiera completa con cantidades (actualizada)
+// Ruta para obtener información financiera completa
 app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
 
@@ -168,6 +168,28 @@ app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener información financiera completa' });
     }
 });
+
+// Nueva ruta para obtener solo el salario
+app.get('/informacion-financiera-salario2/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
+
+    try {
+        const result = await pool.query(
+            'SELECT salario FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
+        );
+
+        if (result.rows.length > 0) {
+            const { salario } = result.rows[0];
+            res.status(200).json({ salario });
+        } else {
+            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
+        }
+    } catch (error) {
+        console.error('Error al obtener salario:', error);
+        res.status(500).json({ error: 'Error al obtener salario' });
+    }
+});
 // Ruta para obtener información financiera solo para el gráfico de pastel
 app.get('/informacion-financiera/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
@@ -189,7 +211,34 @@ app.get('/informacion-financiera/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener información financiera' });
     }
 });
+app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
 
+    try {
+        const result = await pool.query(
+            'SELECT salario, comida, ropa, transporte FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
+        );
+
+        if (result.rows.length > 0) {
+            const { salario, comida, ropa, transporte } = result.rows[0];
+
+            const porcentajes = {
+                porcentajeComida: ((comida / salario) * 100).toFixed(2),
+                porcentajeRopa: ((ropa / salario) * 100).toFixed(2),
+                porcentajeTransporte: ((transporte / salario) * 100).toFixed(2),
+                porcentajeOtros: ((comida + ropa + transporte) / salario) * 100
+            };
+
+            res.status(200).json(porcentajes);
+        } else {
+            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
+        }
+    } catch (error) {
+        console.error('Error al obtener porcentajes de gasto:', error);
+        res.status(500).json({ error: 'Error al obtener porcentajes de gasto' });
+    }
+});
 
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;

@@ -40,3 +40,27 @@
   <script src="../backend/CONTROLLERS/futurebuy.js"></script>
 </body>
 </html>
+<script>
+  async function obtenerSalario() {
+    const usuarioId = 1
+
+    try {
+      const response = await fetch(`http://localhost:3000/informacion-financiera-salario2/${usuarioId}`);
+      const data = await response.json();
+      const salario = data.salario;
+
+      if (!salario || isNaN(salario)) {
+        alert('No se pudo obtener el salario. Inténtalo más tarde.');
+        return;
+      }
+
+      // Usa el salario para hacer tus cálculos
+      console.log('Salario del usuario:', salario);
+    } catch (error) {
+      console.error('Error al obtener el salario:', error);
+      alert('Error al obtener el salario. Inténtalo más tarde.');
+    }
+  }
+
+  obtenerSalario();
+</script>
