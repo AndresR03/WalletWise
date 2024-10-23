@@ -44,6 +44,33 @@ body {
     margin-bottom: 10px;
 }
 
+.upload-section {
+    text-align: center; /* Centra el contenido dentro de la sección */
+    margin-bottom: 20px; /* Añade espacio debajo del botón */
+}
+
+.upload-section label {
+    display: inline-block;
+    background-color: #f8b400;
+    color: #1c3e7b;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.upload-section label:hover {
+    background-color: #ffa500;
+}
+
+.upload-section input[type="file"] {
+    display: none; /* Oculta el input real */
+}
+
+
 .info {
     font-size: 16px;
 }
@@ -73,19 +100,23 @@ body {
     margin-bottom: 10px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;  /* Permite que las columnas se ajusten según el contenido */
-}
-
-table th, table td {
-    border: 1px solid white;
-    padding: 8px;
+.logout-section {
     text-align: center;
-    font-size: 14px;
+    margin-top: 20px;
 }
 
-table th {
-    white-space: nowrap;  /* Evita que el texto de los encabezados se divida en líneas */
+.logout-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
+
+.logout-button:hover {
+    background-color: #c0392b;
+}
+

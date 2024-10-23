@@ -1,6 +1,3 @@
-function goBack() {
-    window.history.back();
-}
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
@@ -14,7 +11,7 @@ document.getElementById('save-button').addEventListener('click', async function(
     const otraCategoria3 = document.getElementById('category3').value;
 
     const data = {
-        usuario_id: usuarioId, // Cambiado de usuario_email a usuario_id
+        usuario_id: usuarioId,
         salario: salario,
         comida: comida,
         ropa: ropa,
@@ -35,6 +32,8 @@ document.getElementById('save-button').addEventListener('click', async function(
 
         const result = await response.json();
         if (response.ok) {
+            // Guardar el salario en localStorage
+            localStorage.setItem('salario', salario);
             alert('Información financiera guardada exitosamente');
         } else {
             alert('Error: ' + result.error);
