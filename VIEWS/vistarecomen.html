@@ -8,23 +8,29 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="content-box">
-            <header>
-                <button class="back-button" onclick="goBack()">← Volver</button>
-                <img src="./img/logo_app.jpg" alt="Logo" class="logo">
-            </header>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">← Volver</button>
+        <img src="./img/logo_app.jpg" alt="Logo" class="logo">
+    </header>
 
-            <h1 class="title">Vista Gráfica de Recomendaciones</h1> 
+    <h1 class="main-title">Más detalles</h1>
 
-            <div class="chart-container">
-                <canvas id="pieChart"></canvas>
-            </div>
-
-            <div class="legend"></div>
+    <section class="charts-section">
+        <!-- Gráfico de barras -->
+        <div class="chart-box">
+            <canvas id="barChart"></canvas>
         </div>
-    </div>
 
+        <!-- Gráfico de líneas -->
+        <div class="chart-box">
+            <canvas id="lineChart"></canvas>
+        </div>
+
+        <!-- Gráfico de radar -->
+        <div class="chart-box">
+            <canvas id="radarChart"></canvas>
+        </div>
+    </section>
 
     <script src="../backend/CONTROLLERS/scriptrecomen.js"></script>
 </body>

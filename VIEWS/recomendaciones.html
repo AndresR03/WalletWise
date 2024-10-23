@@ -8,23 +8,35 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
+    <header>
         <a href="#" class="back-button" onclick="goBack()">← Volver</a>
-        <h1 class="title">Recomendaciones</h1>
-        <div class="chart">
+        <h1>Recomendaciones</h1>
+    </header>
+
+    <section class="content">
+
+        <div class="chart-section">
             <canvas id="myPieChart" width="400" height="400"></canvas>
         </div>
-        <div class="recommendacion">
+
+
+        <div class="legend-section">
+            <h2>Porcentajes de los Gastos</h2>
+            <div class="legend"></div>
+        </div>
+
+
+        <div class="recommendacion-section">
             <h2>Recomendación</h2>
-            <div class="recommendacion-box">
-                <p id="recommendacion-text">Nuestra recomendación es:</p>
-            </div>
+            <p id="recommendacion-text">Nuestra recomendación es:</p>
         </div>
-        <div class="more-details">
-            <button onclick="goToDetails()">Ver más detalles</button>
-        </div>
-    </div>
+    </section>
+
+
+    <footer>
+        <button onclick="goToDetails()">Ver más detalles</button>
+    </footer>
+
     <script src="../backend/CONTROLLERS/recomendacionscript.js"></script>
-    
 </body>
 </html>
