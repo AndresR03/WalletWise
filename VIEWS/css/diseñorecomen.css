@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #003366; /* Fondo azul oscuro */
+    background-color: #003366;
     color: white;
 }
 
@@ -37,17 +37,17 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 40px; /* Espacio entre gráficos */
+    gap: 40px;
     padding: 20px;
 }
 
 .chart-box {
     width: 100%;
     max-width: 600px;
-    background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+    background: rgba(255, 255, 255, 0.1);
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 canvas {
@@ -57,6 +57,6 @@ canvas {
 
 @media (min-width: 768px) {
     .chart-box {
-        width: 45%; /* Dos gráficos por fila en pantallas más grandes */
+        width: 45%;
     }
 }

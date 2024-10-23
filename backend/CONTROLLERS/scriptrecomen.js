@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dataValues = [transporte, comida, ropa, otra_categoria_1, otra_categoria_2, otra_categoria_3];
     const colors = ['#FFCE56', '#FF6384', '#36A2EB', '#FF5733', '#33FF57', '#3357FF'];
 
-    // Gráfico de barras
     const barConfig = {
         type: 'bar',
         data: {
@@ -51,7 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const barCtx = document.getElementById('barChart').getContext('2d');
     new Chart(barCtx, barConfig);
 
-    // Gráfico de líneas
     const lineConfig = {
         type: 'line',
         data: {
@@ -74,7 +72,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const lineCtx = document.getElementById('lineChart').getContext('2d');
     new Chart(lineCtx, lineConfig);
 
-    // Gráfico de radar
     const radarConfig = {
         type: 'radar',
         data: {
