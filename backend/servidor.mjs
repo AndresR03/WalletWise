@@ -5,6 +5,9 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv'; // Importar dotenv para cargar variables de entorno
+import multer from 'multer'; // Importar multer para manejar la subida de archivos
+import path from 'path';
+import fs from 'fs'; // Para manejo de archivos
 
 dotenv.config(); // Cargar variables de entorno desde .env
 
@@ -96,79 +99,23 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Ruta para guardar información financiera (ya existente)
 app.post('/guardar-informacion-financiera', async (req, res) => {
     const { usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3 } = req.body;
 
     try {
-        // Verificar si ya existe un registro para el id del usuario
-        const existingRecord = await pool.query(
-            'SELECT * FROM informacion_financiera WHERE usuario_id = $1',
-            [usuario_id]
-        );
-
-        if (existingRecord.rows.length > 0) {
-            // Si ya existe, actualizar el registro existente
-            const result = await pool.query(
-                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otra_categoria_1 = $5, otra_categoria_2 = $6, otra_categoria_3 = $7 WHERE usuario_id = $8 RETURNING *',
-                [salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3, usuario_id]
-            );
-            return res.status(200).json({ message: 'Información financiera actualizada exitosamente', data: result.rows[0] });
-        }
-
-        // Si no existe, insertar un nuevo registro
         const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
             [usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3]
         );
 
-        res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
+        res.status(201).json({ message: 'Información financiera guardada exitosamente' });
     } catch (error) {
-        if (error.code === '23505') { // Código de error de violación de unicidad
-            return res.status(400).json({ message: 'Ya existe un registro de información financiera para este usuario.' });
-        }
-
-        console.error('Error al guardar información financiera:', error);
-        res.status(500).json({ error: 'Error al guardar información financiera' });
+        console.error('Error al guardar la información financiera:', error);
+        res.status(500).json({ error: 'Error al guardar la información financiera' });
     }
 });
 
-// Ruta para obtener información financiera completa con cantidades (actualizada)
-app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
-    const { usuario_id } = req.params;
-
-    try {
-        const result = await pool.query(
-            'SELECT salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 FROM informacion_financiera WHERE usuario_id = $1',
-            [usuario_id]
-        );
-
-        if (result.rows.length > 0) {
-            const { salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 } = result.rows[0];
-
-            // Calcular los gastos para 7 días
-            const gastos = {
-                gastoComida: comida * 7,
-                gastoRopa: ropa * 7,
-                gastoTransporte: transporte * 7,
-                gastoOtraCategoria1: otra_categoria_1 * 7,
-                gastoOtraCategoria2: otra_categoria_2 * 7,
-                gastoOtraCategoria3: otra_categoria_3 * 7
-            };
-
-            res.status(200).json({
-                salario,
-                ...gastos
-            });
-        } else {
-            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
-        }
-    } catch (error) {
-        console.error('Error al obtener información financiera completa:', error);
-        res.status(500).json({ error: 'Error al obtener información financiera completa' });
-    }
-});
-// Ruta para obtener información financiera solo para el gráfico de pastel
+// Ruta para obtener información financiera (ya existente)
 app.get('/informacion-financiera/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
 
@@ -189,35 +136,47 @@ app.get('/informacion-financiera/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener información financiera' });
     }
 });
-app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {
-    const { usuario_id } = req.params;
 
-    try {
-        const result = await pool.query(
-            'SELECT salario, comida, ropa, transporte FROM informacion_financiera WHERE usuario_id = $1',
-            [usuario_id]
-        );
-
-        if (result.rows.length > 0) {
-            const { salario, comida, ropa, transporte } = result.rows[0];
-
-            const porcentajes = {
-                porcentajeComida: ((comida / salario) * 100).toFixed(2),
-                porcentajeRopa: ((ropa / salario) * 100).toFixed(2),
-                porcentajeTransporte: ((transporte / salario) * 100).toFixed(2),
-                porcentajeOtros: ((comida + ropa + transporte) / salario) * 100
-            };
-
-            res.status(200).json(porcentajes);
-        } else {
-            res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
-        }
-    } catch (error) {
-        console.error('Error al obtener porcentajes de gasto:', error);
-        res.status(500).json({ error: 'Error al obtener porcentajes de gasto' });
+// Configuración de almacenamiento de multer para la subida de imágenes
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Directorio donde se almacenarán las imágenes
+    },
+    filename: function (req, file, cb) {
+        // Renombrar el archivo para evitar conflictos de nombres
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
+const upload = multer({ storage: storage });
+
+// Ruta para subir la imagen de perfil
+app.post('/upload-profile-picture', upload.single('profileImage'), (req, res) => {
+    try {
+        // El archivo está disponible en req.file
+        const imageUrl = `/uploads/${req.file.filename}`; // URL de la imagen
+        res.status(200).json({ message: 'Imagen subida correctamente', imageUrl });
+    } catch (error) {
+        console.error('Error al subir la imagen:', error);
+        res.status(500).json({ error: 'Error al subir la imagen' });
+    }
+});
+
+// Manejar la ruta para mostrar la imagen subida
+app.use('/uploads', express.static('uploads')); // Hacer público el directorio de uploads
+
+// Manejar el error 404 si la imagen no se encuentra
+app.get('/uploads/:filename', (req, res) => {
+    const filePath = path.join(__dirname, 'uploads', req.params.filename);
+    
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ error: 'Imagen no encontrada' });
+        }
+
+        res.sendFile(filePath);
+    });
+});
 
 // Iniciar servidor en puerto 3000
 const PORT = process.env.PORT || 3000;

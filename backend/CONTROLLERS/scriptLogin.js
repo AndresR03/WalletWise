@@ -22,6 +22,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         const data = await response.json();
 
         if (response.ok) {
+            localStorage.setItem('nombre_completo', data.nombre_completo);
             alert(`Bienvenido, ${data.nombre_completo}`);
             window.location.href = 'home.html'; // Redirigir a la página principal
         } else {

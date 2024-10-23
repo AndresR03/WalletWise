@@ -10,50 +10,23 @@
     <div class="container">
         <button class="back-button">← Volver</button>
         <div class="profile-section">
-            <img src="./img/ronaldo.jpg" alt="Foto de perfil" class="profile-picture">
+            <img id="profilePicture" src="" alt="Foto de perfil" class="profile-picture">
             <div class="info">
-                <p><strong>Nombre:</strong> John shamir</p>
-                <p><strong>Apellidos:</strong> Franco Zapata</p>
+                <p><strong>Nombre:</strong> <span id="nombreUsuario">Cargando...</span></p>
             </div>
+        </div>
+        <div class="upload-section">
+            <label for="profileImage">Subir nueva foto de perfil</label>
+            <input type="file" id="profileImage" accept="image/*">
         </div>
 
         <div class="salary-section">
             <label for="salary">Salario</label>
-            <p>2.000.000.000</p>
+            <p id="salaryDisplay">Cargando...</p> <!-- Elemento donde se mostrará el salario -->
         </div>
 
-        <div class="expenses-section">
-            <h2>Gastos mensuales</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Día</th>
-                        <th>Ahorro diario</th>
-                        <th>Acumulado</th>
-                        <th>Día</th>
-                        <th>Ahorro diario</th>
-                        <th>Acumulado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>11</td>
-                        <td>2.20</td>
-                        <td>13.20</td>
-                        <td>21</td>
-                        <td>4.20</td>
-                        <td>46.20</td>
-                    </tr>
-                    <tr>
-                        <td>12</td>
-                        <td>2.40</td>
-                        <td>15.60</td>
-                        <td>22</td>
-                        <td>4.40</td>
-                        <td>50.60</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="logout-section">
+            <button id="logoutButton" class="logout-button">Cerrar Sesión</button>
         </div>
     </div>
     <script src="../backend/CONTROLLERS/perfil.js"></script>
