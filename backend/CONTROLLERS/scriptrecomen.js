@@ -9,10 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-
-    const response = await fetch (`http://localhost:3000/informacion-financiera/${usuarioId}`); 
+    const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`);
     const data = await response.json();
-
 
     const transporte = parseFloat(data.transporte) || 0;
     const comida = parseFloat(data.comida) || 0;
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const otra_categoria_2 = parseFloat(data.otra_categoria_2) || 0;
     const otra_categoria_3 = parseFloat(data.otra_categoria_3) || 0;
 
-
     const total = transporte + comida + ropa + otra_categoria_1 + otra_categoria_2 + otra_categoria_3;
 
     if (total === 0) {
@@ -29,51 +26,74 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    const labels = ['Transporte', 'Comida', 'Ropa', 'Otra Categoría 1', 'Otra Categoría 2', 'Otra Categoría 3'];
+    const dataValues = [transporte, comida, ropa, otra_categoria_1, otra_categoria_2, otra_categoria_3];
+    const colors = ['#FFCE56', '#FF6384', '#36A2EB', '#FF5733', '#33FF57', '#3357FF'];
 
-    const transportePorcentaje = ((transporte / total) * 100).toFixed(2);
-    const comidaPorcentaje = ((comida / total) * 100).toFixed(2);
-    const ropaPorcentaje = ((ropa / total) * 100).toFixed(2);
-    const otros1Porcentaje = ((otra_categoria_1 / total) * 100).toFixed(2);
-    const otros2Porcentaje = ((otra_categoria_2 / total) * 100).toFixed(2);
-    const otros3Porcentaje = ((otra_categoria_3 / total) * 100).toFixed(2);
-
-
-    const dataChart = {
-        labels: ['Transporte', 'Comida', 'Ropa', 'otra_categoria_1', 'otra_categoria_2', 'otra_categoria_3'],
-        datasets: [{
-            label: 'Categorías',
-            data: [transporte, comida, ropa, otra_categoria_1, otra_categoria_2, otra_categoria_3],
-            backgroundColor: ['#ff6666', '#ffcc99', '#ffff99', '#666699', '#ffccff', '#ff9900'],
-            hoverOffset: 4
-        }]
-    };
-
-
-    const config = {
-        type: 'pie',
-        data: dataChart,
+    const barConfig = {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Gastos por Categoría',
+                data: dataValues,
+                backgroundColor: colors
+            }]
+        },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    display: false 
-                }
+                legend: { display: false }
             }
         }
     };
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, barConfig);
 
-    const ctx = document.getElementById('pieChart').getContext('2d');
-    const pieChart = new Chart(ctx, config);
+    const lineConfig = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Gastos por Categoría',
+                data: dataValues,
+                backgroundColor: colors,
+                borderColor: colors,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    };
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    new Chart(lineCtx, lineConfig);
 
-
-    const legendHTML = `
-        <p><span class="color-box" style="background-color: #ff6666;"></span> Transporte ${transportePorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffcc99;"></span> Comida ${comidaPorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffff99;"></span> Ropa ${ropaPorcentaje}%</p>
-        <p><span class="color-box" style="background-color: #666699;"></span> otra_categoria_1 ${otros1Porcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ffccff;"></span> otra_categoria_2 ${otros2Porcentaje}%</p>
-        <p><span class="color-box" style="background-color: #ff9900;"></span> otra_categoria_3 ${otros3Porcentaje}%</p>
-    `;
-
-    document.querySelector('.legend').innerHTML = legendHTML;
+    const radarConfig = {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Distribución de Gastos',
+                data: dataValues,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    };
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    new Chart(radarCtx, radarConfig);
 });
