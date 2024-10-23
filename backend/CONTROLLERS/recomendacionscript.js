@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const usuarioId = 1; 
 
     try {
-        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`);
+        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`)
         const data = await response.json();
 
         if (response.ok) {

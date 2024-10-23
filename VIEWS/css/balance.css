@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e3a8a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #1e40af;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px; /* Aumenté el ancho máximo */
+}
+
+#chart {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid white;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #333;
+}
+
+td {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+img {
+    vertical-align: middle;
+    max-width: 30px;
+}
