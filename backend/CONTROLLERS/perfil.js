@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.ok) {
                         if (imgElement) {
                             const serverImageUrl = `http://localhost:3000${data.imageUrl}`;
-                            imgElement.src = serverImageUrl; // Actualizar la imagen con la URL desde el servidor
-                            localStorage.setItem('profileImageUrl', serverImageUrl); // Guardar la URL de la imagen en localStorage
+                            imgElement.src = serverImageUrl; 
+                            localStorage.setItem('profileImageUrl', serverImageUrl); 
                             alert('Foto de perfil actualizada correctamente');
                         }
                     } else {
@@ -77,15 +77,15 @@ document.addEventListener('DOMContentLoaded', function() {
         logoutButton.addEventListener('click', function() {
             // Limpiar localStorage y redirigir al login
             localStorage.clear();
-            window.location.href = 'login.html';  // Redirige a la página de inicio de sesión
+            window.location.href = 'login.html';  
         });
     }
     // Obtener el salario del localStorage y mostrarlo en el perfil
-    const salarioElemento = document.querySelector('.salary-section p'); // Asegúrate de que este selector apunte al elemento correcto
-    const salario = localStorage.getItem('salario'); // Recuperar el salario del localStorage
+    const salarioElemento = document.querySelector('.salary-section p'); 
+    const salario = localStorage.getItem('salario'); 
 
     if (salarioElemento && salario) {
-        salarioElemento.innerHTML = `<strong>Salario:</strong> ${salario}`; // Mostrar el salario en el perfil
+        salarioElemento.innerHTML = `<strong>Salario:</strong> ${salario}`;
     }
 
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const backButton = document.querySelector('.back-button');
     if (backButton) {
         backButton.addEventListener('click', function() {
-            window.location.href = 'home.html';  // Redirige a la página home.html
+            window.location.href = 'home.html';  
         });
     }
 });

@@ -1,18 +1,21 @@
 import { validarUsuario } from './MODELS/usuModels.mjs';
-import pkg from 'pg'; // Importación del módulo pg
-const { Pool } = pkg; // Desestructuración para obtener la clase Pool
+import pkg from 'pg';
+const { Pool } = pkg;
 import bcrypt from 'bcryptjs';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv'; // Importar dotenv para cargar variables de entorno
+import dotenv from 'dotenv'; 
+import multer from 'multer'; 
+import path from 'path';
+import fs from 'fs';
 
-dotenv.config(); // Cargar variables de entorno desde .env
+dotenv.config(); 
 
 const app = express();
-app.use(cors()); // Habilitar CORS
-app.use(express.json()); // Middleware para parsear JSON
+app.use(cors()); 
+app.use(express.json()); 
 
-// Configurar PostgreSQL con variables de entorno
+
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -238,6 +241,46 @@ app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {
         console.error('Error al obtener porcentajes de gasto:', error);
         res.status(500).json({ error: 'Error al obtener porcentajes de gasto' });
     }
+});
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Directorio donde se almacenarán las imágenes
+    },
+    filename: function (req, file, cb) {
+        // Renombrar el archivo para evitar conflictos de nombres
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Ruta para subir la imagen de perfil
+app.post('/upload-profile-picture', upload.single('profileImage'), (req, res) => {
+    try {
+        // El archivo está disponible en req.file
+        const imageUrl = `/uploads/${req.file.filename}`; // URL de la imagen
+        res.status(200).json({ message: 'Imagen subida correctamente', imageUrl });
+    } catch (error) {
+        console.error('Error al subir la imagen:', error);
+        res.status(500).json({ error: 'Error al subir la imagen' });
+    }
+});
+
+// Manejar la ruta para mostrar la imagen subida
+app.use('/uploads', express.static('uploads')); // Hacer público el directorio de uploads
+
+// Manejar el error 404 si la imagen no se encuentra
+app.get('/uploads/:filename', (req, res) => {
+    const filePath = path.join(__dirname, 'uploads', req.params.filename);
+    
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ error: 'Imagen no encontrada' });
+        }
+
+        res.sendFile(filePath);
+    });
 });
 
 // Iniciar servidor en puerto 3000

@@ -42,4 +42,11 @@ document.getElementById('save-button').addEventListener('click', async function(
         console.error('Error al guardar la información financiera:', error);
         alert('Error al guardar la información financiera, intenta nuevamente.');
     }
+
+    const backButton = document.querySelector('.back-button');
+    if (backButton) {
+        backButton.addEventListener('click', function() {
+            window.location.href = 'home.html';
+        });
+    }
 });

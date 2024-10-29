@@ -1,7 +1,7 @@
 // Obtener datos financieros del backend y generar gráfico con gastos en 7 días
 async function obtenerDatosYGenerarGrafico() {
     try {
-        const response = await fetch('http://localhost:3000/informacion-financiera-completa/1'); // Reemplaza 1 por el ID del usuario correspondiente
+        const response = await fetch('http://localhost:3000/informacion-financiera-completa/1'); 
         const data = await response.json();
 
         // Datos de gastos en 7 días
