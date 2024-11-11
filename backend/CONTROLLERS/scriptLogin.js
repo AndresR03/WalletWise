@@ -23,6 +23,15 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
         if (response.ok) {
             localStorage.setItem('nombre_completo', data.nombre_completo);
+
+            // Guardar el ID del usuario en localStorage y verificar su existencia
+            if (data.id) {
+                localStorage.setItem('user_id', data.id); // Guarda el ID del usuario
+                console.log(`ID del usuario guardado: ${data.id}`);
+            } else {
+                console.warn('ID del usuario no encontrado en la respuesta del servidor.');
+            }
+
             alert(`Bienvenido, ${data.nombre_completo}`);
             window.location.href = 'home.html'; // Redirigir a la página principal
         } else {
@@ -32,21 +41,5 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     } catch (error) {
         console.error('Error:', error);
         alert('Hubo un error en el servidor. Inténtalo más tarde.');
-    }
-});
-
-// Funcionalidad para mostrar/ocultar la contraseña
-const togglePassword = document.getElementById('togglePassword');
-const passwordInput = document.getElementById('password');
-
-togglePassword.addEventListener('click', function () {
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-
-    // Cambiar el ícono de ojo
-    const icon = this.querySelector('i');
-    if (icon) {
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
     }
 });

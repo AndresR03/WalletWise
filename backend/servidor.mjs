@@ -91,13 +91,14 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
 
-        // Respuesta con el nombre completo
-        res.status(200).json({ message: 'Inicio de sesión exitoso', nombre_completo: user.nombre_completo });
+        // Respuesta con el nombre completo e ID del usuario
+        res.status(200).json({ message: 'Inicio de sesión exitoso', nombre_completo: user.nombre_completo, id: user.id });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
 });
+
 
 // Ruta para guardar información financiera
 app.post('/guardar-informacion-financiera', async (req, res) => {
