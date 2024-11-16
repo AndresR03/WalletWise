@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.ok) {
                         if (imgElement) {
                             const serverImageUrl = `http://localhost:3000${data.imageUrl}`;
-                            imgElement.src = serverImageUrl;
-                            localStorage.setItem('profileImageUrl', serverImageUrl);
+                            imgElement.src = serverImageUrl; 
+                            localStorage.setItem('profileImageUrl', serverImageUrl); 
                             alert('Foto de perfil actualizada correctamente');
                         }
                     } else {
@@ -70,12 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoutButton) {
         logoutButton.addEventListener('click', function() {
             localStorage.clear();
-            window.location.href = 'login.html';
+            window.location.href = 'login.html';  // Redirige a la página de inicio de sesión
         });
     }
     // Obtener el salario del localStorage y mostrarlo en el perfil
-    const salarioElemento = document.querySelector('.salary-section p'); 
-    const salario = localStorage.getItem('salario'); 
+    const salarioElemento = document.querySelector('.salary-section p'); // Asegúrate de que este selector apunte al elemento correcto
+    const salario = localStorage.getItem('salario'); // Recuperar el salario del localStorage
+
     if (salarioElemento && salario) {
         salarioElemento.innerHTML = `<strong>Salario:</strong> ${salario}`;
     }
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const backButton = document.querySelector('.back-button');
     if (backButton) {
         backButton.addEventListener('click', function() {
-            window.location.href = 'home.html';
+            window.location.href = 'home.html';  // Redirige a la página home.html
         });
     }
 });

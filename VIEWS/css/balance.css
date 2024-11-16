@@ -6,18 +6,26 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
 .container {
     background-color: #1e40af;
     border-radius: 10px;
     padding: 20px;
-    width: 90%;
-    max-width: 600px; /* Aumenté el ancho máximo */
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: auto; /* Permite desplazamiento horizontal */
 }
 
 #chart {
     margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px; /* Ajusta el ancho máximo */
+    overflow-x: auto; /* Permite desplazamiento horizontal para el gráfico */
 }
 
 button {
@@ -27,6 +35,11 @@ button {
     border-radius: 5px;
     color: white;
     cursor: pointer;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Permite desplazamiento horizontal */
 }
 
 table {
@@ -42,6 +55,7 @@ table, th, td {
 th, td {
     padding: 8px;
     text-align: left;
+    font-size: 14px;
 }
 
 th {
@@ -56,4 +70,20 @@ td {
 img {
     vertical-align: middle;
     max-width: 30px;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    #chart {
+        max-width: 100%; /* Ocupa todo el ancho */
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
 }

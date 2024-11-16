@@ -3,40 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recomendaciones</title>
+    <title>Recomendaciones Financieras</title>
     <link rel="stylesheet" href="./css/recomendaciones.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <header>
-        <a href="#" class="back-button" onclick="goBack()">← Volver</a>
-        <h1>Recomendaciones</h1>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">←Volver</button>
+        <h1 class="main-title">Recomendaciones</h1>
     </header>
 
-    <section class="content">
+    <main class="content">
+        <section class="chart-section">
+            <div class="chart-box">
+                <canvas id="myPieChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <canvas id="barChart"></canvas> 
+            </div>
+            <div class="chart-box">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </section>
 
-        <div class="chart-section">
-            <canvas id="myPieChart" width="400" height="400"></canvas>
-        </div>
+        <section class="main-section">
+            <div class="legend-section">
+                <h2>Distribución de Gastos</h2>
+                <div class="legend"></div>
+            </div>
 
-
-        <div class="legend-section">
-            <h2>Porcentajes de los Gastos</h2>
-            <div class="legend"></div>
-        </div>
-
-
-        <div class="recommendacion-section">
-            <h2>Recomendación</h2>
-            <p id="recommendacion-text">Nuestra recomendación es:</p>
-        </div>
-    </section>
-
+            <div class="recommendacion-section">
+                <h2 class="recommendacion-title">Recomendación</h2>
+                <div class="recommendacion-card">
+                    <p id="recommendacion-text">Cargando recomendación...</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <button onclick="goToDetails()">Ver más detalles</button>
+        <p>&copy; 2024</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="../backend/CONTROLLERS/recomendacionscript.js"></script>
 </body>
+
 </html>

@@ -10,24 +10,28 @@
     <div class="container">
         <button class="back-button" onclick="window.location.href='home.html'">← Volver</button>
 
-        <h1>Vista Balance Semanal</h1>
+        <h1>Balance Semanal</h1>
         
         <!-- Gráfico -->
-        <svg id="chart" width="500" height="300"></svg>
+        <div id="chart-container">
+            <svg id="chart" width="500" height="300"></svg>
+        </div>
 
         <!-- Tabla -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Icono</th>
-                    <th>Categoría</th>
-                    <th>Dinero Gastado</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Aquí se llenarán los datos -->
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Icono</th>
+                        <th>Categoría</th>
+                        <th>Dinero Gastado</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Aquí se llenarán los datos -->
+                </tbody>
+            </table>
+        </div>
     </div>
     
     <script src="https://d3js.org/d3.v6.min.js"></script>
