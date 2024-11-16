@@ -1,14 +1,70 @@
+// Abrir y cerrar el modal
+const modal = document.getElementById('category-modal');
+const addCategoryButton = document.getElementById('add-category-button');
+const closeButton = document.querySelector('.close-button');
+const confirmAddCategoryButton = document.getElementById('confirm-add-category');
+
+// Evento para abrir el modal
+addCategoryButton.addEventListener('click', () => {
+    modal.style.display = 'block';
+});
+
+// Evento para cerrar el modal
+closeButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+// Cerrar el modal al hacer clic fuera de él
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+// Confirmar y agregar la nueva categoría
+confirmAddCategoryButton.addEventListener('click', () => {
+    const newCategoryName = document.getElementById('new-category-name').value.trim();
+    if (newCategoryName) {
+        addNewCategory(newCategoryName);
+        modal.style.display = 'none';
+        document.getElementById('new-category-name').value = '';
+    } else {
+        alert('Por favor ingresa un nombre para la categoría.');
+    }
+});
+
+// Función para agregar una nueva categoría a la lista
+function addNewCategory(name) {
+    const categoriesList = document.getElementById('categories-list');
+    
+    const newCategory = document.createElement('div');
+    newCategory.classList.add('category', 'custom-category');
+    
+    newCategory.innerHTML = `
+        <label>${name}</label>
+        <input type="number" class="category-value" placeholder="0">
+    `;
+
+    categoriesList.appendChild(newCategory);
+}
+
+// Guardar la información financiera
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    const usuarioId = 1; // Cambiar esto para obtener el ID del usuario autenticado dinámicamente
-    const salario = document.getElementById('salary').value;
-    const comida = document.getElementById('food').value;
-    const ropa = document.getElementById('clothes').value;
-    const transporte = document.getElementById('transport').value;
-    const otraCategoria1 = document.getElementById('category1').value;
-    const otraCategoria2 = document.getElementById('category2').value;
-    const otraCategoria3 = document.getElementById('category3').value;
+    const usuarioId = 1;
+    const salario = parseFloat(document.getElementById('salary').value) || 0;
+    const comida = parseFloat(document.getElementById('food').value) || 0;
+    const ropa = parseFloat(document.getElementById('clothes').value) || 0;
+    const transporte = parseFloat(document.getElementById('transport').value) || 0;
+
+    // Obtener las categorías adicionales
+    const categoriasPersonalizadas = Array.from(document.querySelectorAll('.custom-category')).map(category => {
+        return {
+            nombre: category.querySelector('label').textContent,
+            valor: parseFloat(category.querySelector('.category-value').value) || 0
+        };
+    });
 
     const data = {
         usuario_id: usuarioId,
@@ -16,9 +72,7 @@ document.getElementById('save-button').addEventListener('click', async function(
         comida: comida,
         ropa: ropa,
         transporte: transporte,
-        otraCategoria1: otraCategoria1,
-        otraCategoria2: otraCategoria2,
-        otraCategoria3: otraCategoria3,
+        categorias_personalizadas: categoriasPersonalizadas 
     };
 
     try {
@@ -32,7 +86,6 @@ document.getElementById('save-button').addEventListener('click', async function(
 
         const result = await response.json();
         if (response.ok) {
-            // Guardar el salario en localStorage
             localStorage.setItem('salario', salario);
             alert('Información financiera guardada exitosamente');
         } else {

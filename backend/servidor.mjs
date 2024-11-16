@@ -97,41 +97,32 @@ app.post('/login', async (req, res) => {
 });
 
 // Ruta para guardar información financiera
-app.post('/guardar-informacion-financiera', async (req, res) => {
-    const { usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3 } = req.body;
+    app.post('/guardar-informacion-financiera', async (req, res) => {
+        const { usuario_id, salario, comida, ropa, transporte, categorias_personalizadas } = req.body;
 
-    try {
-        // Verificar si ya existe un registro para el id del usuario
-        const existingRecord = await pool.query(
-            'SELECT * FROM informacion_financiera WHERE usuario_id = $1',
-            [usuario_id]
-        );
+        // Confirma el valor recibido
+        console.log("categorias_personalizadas recibido:", categorias_personalizadas);
 
-        if (existingRecord.rows.length > 0) {
-            // Si ya existe, actualizar el registro existente
-            const result = await pool.query(
-                'UPDATE informacion_financiera SET salario = $1, comida = $2, ropa = $3, transporte = $4, otra_categoria_1 = $5, otra_categoria_2 = $6, otra_categoria_3 = $7 WHERE usuario_id = $8 RETURNING *',
-                [salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3, usuario_id]
+        try {
+            // Convertimos `categorias_personalizadas` a JSON solo si no es null o undefined
+            const categoriasJson = categorias_personalizadas ? JSON.stringify(categorias_personalizadas) : null;
+
+            await pool.query(
+                `INSERT INTO informacion_financiera 
+                    (usuario_id, salario, comida, ropa, transporte, categorias_personalizadas) 
+                VALUES ($1, $2, $3, $4, $5, $6)`,
+                [usuario_id, salario, comida, ropa, transporte, categoriasJson]
             );
-            return res.status(200).json({ message: 'Información financiera actualizada exitosamente', data: result.rows[0] });
+
+            res.json({ message: 'Información guardada exitosamente' });
+        } catch (error) {
+            console.error('Error al guardar la información financiera:', error);
+            res.status(500).json({ error: 'Error al guardar la información financiera' });
         }
+    });
 
-        // Si no existe, insertar un nuevo registro
-        const result = await pool.query(
-            'INSERT INTO informacion_financiera (usuario_id, salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [usuario_id, salario, comida, ropa, transporte, otraCategoria1, otraCategoria2, otraCategoria3]
-        );
 
-        res.status(201).json({ message: 'Información financiera guardada exitosamente', data: result.rows[0] });
-    } catch (error) {
-        if (error.code === '23505') { // Código de error de violación de unicidad
-            return res.status(400).json({ message: 'Ya existe un registro de información financiera para este usuario.' });
-        }
 
-        console.error('Error al guardar información financiera:', error);
-        res.status(500).json({ error: 'Error al guardar información financiera' });
-    }
-});
 
 // Ruta para obtener información financiera completa
 app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
