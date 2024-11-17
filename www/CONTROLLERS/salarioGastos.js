@@ -76,7 +76,7 @@ document.getElementById('save-button').addEventListener('click', async function(
     };
 
     try {
-        const response = await fetch('http://localhost:3000/guardar-informacion-financiera', {
+        const response = await fetch('https://walletwise-1-33dw.onrender.com/guardar-informacion-financiera', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -7,21 +7,40 @@ import cors from 'cors';
 import dotenv from 'dotenv'; 
 import multer from 'multer'; 
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs';
 
-dotenv.config(); 
+dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
 const app = express();
 app.use(cors()); 
 app.use(express.json()); 
 
+// Middleware para configurar los encabezados CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Permite cualquier origen
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
+// Configuración de la base de datos
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false, // Necesario para Render o servicios con SSL
+    },
+});
+
+// Verificar la conexión a la base de datos
+pool.connect((err) => {
+    if (err) {
+        console.error('Error al conectar a la base de datos:', err.stack);
+    } else {
+        console.log('Conexión a la base de datos exitosa.');
+    }
 });
 
 // Ruta para registrar usuario
@@ -33,18 +52,21 @@ app.post('/register', async (req, res) => {
         password, 
         confirmar_password, 
         aceptar_terminos 
-    } = req.body; 
+    } = req.body;
 
-    console.log('Datos de registro recibidos:', req.body);
+    // Validación de campos
+    if (!nombre_completo || !correo_electronico || !numero_telefono || !password || !confirmar_password) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
 
-    // Validar los datos del usuario
+    // Validación con la función personalizada
     const validation = validarUsuario(req.body);
     if (!validation.valid) {
         return res.status(400).json({ message: validation.message });
     }
 
     try {
-        // Verificar si el usuario ya existe
+        // Comprobar si el usuario ya existe
         const existingUser = await pool.query(
             'SELECT * FROM usuarios WHERE correo_electronico = $1 OR numero_telefono = $2',
             [correo_electronico, numero_telefono]
@@ -54,14 +76,14 @@ app.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Ya existe un usuario registrado con este correo electrónico o número de teléfono' });
         }
 
-        // Verificar si las contraseñas coinciden
         if (password !== confirmar_password) {
             return res.status(400).json({ message: 'Las contraseñas no coinciden' });
         }
 
-        // Hash de la contraseña
+        // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Insertar el usuario en la base de datos
         const result = await pool.query(
             'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password, aceptar_terminos) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos]
@@ -69,7 +91,7 @@ app.post('/register', async (req, res) => {
 
         res.status(201).json({ message: 'Usuario registrado exitosamente', user: result.rows[0] });
     } catch (error) {
-        console.error('Error al registrar usuario:', error);
+        console.error('Error al registrar usuario:', error.message);
         res.status(500).json({ error: 'Error al registrar usuario' });
     }
 });
@@ -78,7 +100,13 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { correo_electronico, password } = req.body;
 
+    // Validación de campos
+    if (!correo_electronico || !password) {
+        return res.status(400).json({ message: 'Por favor, proporciona correo electrónico y contraseña' });
+    }
+
     try {
+        // Verificar si el usuario existe
         const result = await pool.query('SELECT * FROM usuarios WHERE correo_electronico = $1', [correo_electronico]);
         const user = result.rows[0];
 
@@ -86,44 +114,46 @@ app.post('/login', async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
+        // Comparar contraseñas
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Contraseña incorrecta' });
+            return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
 
-        // Respuesta con el nombre completo e ID del usuario
-        res.status(200).json({ message: 'Inicio de sesión exitoso', nombre_completo: user.nombre_completo, id: user.id });
+        res.status(200).json({ 
+            message: 'Inicio de sesión exitoso', 
+            usuario: { 
+                id: user.id, 
+                nombre_completo: user.nombre_completo, 
+                correo_electronico: user.correo_electronico 
+            } 
+        });
     } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        res.status(500).json({ error: 'Error al iniciar sesión' });
+        console.error('Error al procesar el inicio de sesión:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
 
 // Ruta para guardar información financiera
-    app.post('/guardar-informacion-financiera', async (req, res) => {
-        const { usuario_id, salario, comida, ropa, transporte, categorias_personalizadas } = req.body;
+  app.post('/guardar-informacion-financiera', async (req, res) => {
+    const { usuario_id, salario, comida, ropa, transporte, categorias_personalizadas } = req.body;
 
-        // Confirma el valor recibido
-        console.log("categorias_personalizadas recibido:", categorias_personalizadas);
+    try {
+        const categoriasJson = categorias_personalizadas ? JSON.stringify(categorias_personalizadas) : null;
+        await pool.query(
+            `INSERT INTO informacion_financiera 
+                (usuario_id, salario, comida, ropa, transporte, categorias_personalizadas) 
+            VALUES ($1, $2, $3, $4, $5, $6)`,
+            [usuario_id, salario, comida, ropa, transporte, categoriasJson]
+        );
+        res.json({ message: 'Información guardada exitosamente' });
+    } catch (error) {
+        console.error('Error al guardar datos:', error.message);
+        res.status(500).json({ error: 'Error interno.' });
+    }
+});
 
-        try {
-            // Convertimos `categorias_personalizadas` a JSON solo si no es null o undefined
-            const categoriasJson = categorias_personalizadas ? JSON.stringify(categorias_personalizadas) : null;
-
-            await pool.query(
-                `INSERT INTO informacion_financiera 
-                    (usuario_id, salario, comida, ropa, transporte, categorias_personalizadas) 
-                VALUES ($1, $2, $3, $4, $5, $6)`,
-                [usuario_id, salario, comida, ropa, transporte, categoriasJson]
-            );
-
-            res.json({ message: 'Información guardada exitosamente' });
-        } catch (error) {
-            console.error('Error al guardar la información financiera:', error);
-            res.status(500).json({ error: 'Error al guardar la información financiera' });
-        }
-    });
 
 
 
@@ -132,37 +162,35 @@ app.post('/login', async (req, res) => {
 app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
 
+    console.log(`Iniciando solicitud para usuario_id: ${usuario_id}`);
+
     try {
         const result = await pool.query(
-            'SELECT salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 FROM informacion_financiera WHERE usuario_id = $1',
+            'SELECT salario, comida, ropa, transporte FROM informacion_financiera WHERE usuario_id = $1',
             [usuario_id]
         );
 
-        if (result.rows.length > 0) {
-            const { salario, comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 } = result.rows[0];
+        console.log('Resultado de la consulta:', result.rows);
 
-            // Calcular los gastos para 7 días
-            const gastos = {
+        if (result.rows.length > 0) {
+            const { salario, comida, ropa, transporte } = result.rows[0];
+            console.log(`Datos encontrados: salario=${salario}, comida=${comida}, ropa=${ropa}, transporte=${transporte}`);
+            res.status(200).json({
+                salario,
                 gastoComida: comida * 7,
                 gastoRopa: ropa * 7,
                 gastoTransporte: transporte * 7,
-                gastoOtraCategoria1: otra_categoria_1 * 7,
-                gastoOtraCategoria2: otra_categoria_2 * 7,
-                gastoOtraCategoria3: otra_categoria_3 * 7
-            };
-
-            res.status(200).json({
-                salario,
-                ...gastos
             });
         } else {
+            console.warn(`No se encontraron datos para usuario_id: ${usuario_id}`);
             res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
         }
     } catch (error) {
-        console.error('Error al obtener información financiera completa:', error);
-        res.status(500).json({ error: 'Error al obtener información financiera completa' });
+        console.error('Error en la consulta SQL:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 // Nueva ruta para obtener solo el salario
 app.get('/informacion-financiera-salario2/:usuario_id', async (req, res) => {
@@ -188,24 +216,42 @@ app.get('/informacion-financiera-salario2/:usuario_id', async (req, res) => {
 // Ruta para obtener información financiera solo para el gráfico de pastel
 app.get('/informacion-financiera/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
+    console.log('ID del usuario recibido:', usuario_id);
 
     try {
         const result = await pool.query(
-            'SELECT comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 FROM informacion_financiera WHERE usuario_id = $1',
+            'SELECT comida, ropa, transporte, categorias_personalizadas FROM informacion_financiera WHERE usuario_id = $1',
             [usuario_id]
         );
 
+        console.log('Resultado de la consulta:', result.rows);
+
         if (result.rows.length > 0) {
-            const { comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 } = result.rows[0];
-            res.status(200).json({ comida, ropa, transporte, otra_categoria_1, otra_categoria_2, otra_categoria_3 });
+            const { comida, ropa, transporte, categorias_personalizadas } = result.rows[0];
+
+            console.log('Datos obtenidos:', { comida, ropa, transporte, categorias_personalizadas });
+
+            // Validar el campo categorias_personalizadas
+            const categoriasPersonalizadasJSON = categorias_personalizadas || [];
+
+            // Enviar respuesta con los datos procesados
+            res.status(200).json({
+                comida,
+                ropa,
+                transporte,
+                categorias_personalizadas: categoriasPersonalizadasJSON,
+            });
         } else {
             res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
         }
     } catch (error) {
-        console.error('Error al obtener información financiera:', error);
-        res.status(500).json({ error: 'Error al obtener información financiera' });
+        console.error('Error al obtener información financiera:', error.message);
+        console.error('Consulta ejecutada:', 'SELECT comida, ropa, transporte, categorias_personalizadas FROM informacion_financiera WHERE usuario_id = $1');
+        res.status(500).json({ error: 'Error interno del servidor', details: error.message });
     }
+    
 });
+
 app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
 

@@ -12,17 +12,26 @@ async function obtenerDatosYGenerarGrafico() {
         }
 
         // Realiza la solicitud utilizando el ID del usuario
-        const response = await fetch(`http://localhost:3000/informacion-financiera-completa/${userId}`);
+        const response = await fetch(`https://walletwise-1-33dw.onrender.com/informacion-financiera-completa/${userId}`);
+        
+        // Manejo explícito de errores en la respuesta
+        if (!response.ok) {
+            if (response.status === 404) {
+                alert('No se encontró información financiera para este usuario.');
+            } else {
+                alert('Error al cargar datos financieros. Por favor, intenta más tarde.');
+            }
+            console.error(`Error del servidor: ${response.status} ${response.statusText}`);
+            return;
+        }
+
         const data = await response.json();
 
-        // Datos de gastos en 7 días
+        // Mapear los datos recibidos a las categorías de gastos
         const gastos = [
             { categoria: 'Comida', cantidad: data.gastoComida || 0, icono: '🍔' },
             { categoria: 'Ropa', cantidad: data.gastoRopa || 0, icono: '👗' },
-            { categoria: 'Transporte', cantidad: data.gastoTransporte || 0, icono: '🚗' },
-            { categoria: 'Otra 1', cantidad: data.gastoOtraCategoria1 || 0, icono: '1️⃣' },
-            { categoria: 'Otra 2', cantidad: data.gastoOtraCategoria2 || 0, icono: '2️⃣' },
-            { categoria: 'Otra 3', cantidad: data.gastoOtraCategoria3 || 0, icono: '3️⃣' }
+            { categoria: 'Transporte', cantidad: data.gastoTransporte || 0, icono: '🚗' }
         ];
 
         // Configuración del gráfico usando D3.js
@@ -46,6 +55,7 @@ async function obtenerDatosYGenerarGrafico() {
 
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
+
             .call(d3.axisLeft(y));
 
         svg.append("g").call(xAxis);
@@ -59,7 +69,7 @@ async function obtenerDatosYGenerarGrafico() {
             .attr("y", d => y(d.cantidad))
             .attr("width", x.bandwidth())
             .attr("height", d => y(0) - y(d.cantidad))
-            .attr("fill", (d, i) => d3.schemeCategory10[i]);
+            .attr("fill", (d, i) => d3.schemeCategory10[i % 10]);
 
         // Actualizar la tabla con los gastos
         const tableBody = d3.select("#table-body");
@@ -74,6 +84,7 @@ async function obtenerDatosYGenerarGrafico() {
 
     } catch (error) {
         console.error('Error al obtener los datos financieros:', error);
+        alert('Error inesperado. Por favor, intenta de nuevo más tarde.');
     }
 }
 
