@@ -1,77 +1,103 @@
+/* Asegurar el scroll para el cuerpo */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1e3a8a;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #1e3a8a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Cambiado para permitir el scroll */
+  height: auto; /* Cambiado de 100vh a auto para adaptarse al contenido */
+  min-height: 100vh; /* Mantener el mínimo de altura completa */
+  overflow-y: auto; /* Habilitar el scroll vertical */
+  margin: 0; /* Eliminar margen para evitar espacios no deseados */
 }
+
+/* Ajustar el contenedor para que no exceda la pantalla */
 .container {
-    background-color: #1e40af;
-    border-radius: 10px;
-    padding: 20px;
-    width: 90%;
-    max-width: 400px;
+  background-color: #1e40af;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  margin: 20px 0; /* Agregar margen para dar espacio en la parte superior e inferior */
 }
-  h1 {
-    color: rgb(255, 255, 255);
-  }
-  
-  label {
-    color: rgb(255, 255, 255);
-    display: block;
-    margin-top: 10px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  button {
-    background-color: #ffcc00;
-    color: black;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  button:hover {
-    background-color: #ff9900;
-  }
-  
-  table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid #fc6060;
-    padding: 8px;
-  }
-  
-  th {
-    background-color: #1a75d3;
-    color: rgb(35, 255, 28);
-  }
-  
-  td {
-    background-color: rgb(240, 64, 64);
-  }
-  
-  .back {
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 10px;
-  }
-  
+
+/* Otros estilos existentes permanecen iguales */
+h1 {
+  color: rgb(255, 255, 255);
+}
+
+label {
+  color: rgb(255, 255, 255);
+  display: block;
+  margin-top: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #ffcc00;
+  color: black;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #ff9900;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid hsl(246, 81%, 51%);
+  padding: 8px;
+}
+
+th {
+  background-color: #1a75d3;
+  color: rgb(35, 255, 28);
+}
+
+td {
+  background-color: rgb(70, 153, 186);
+}
+
+.back {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#cerrarResultados {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+#cerrarResultados:hover {
+  background-color: #45a049;
+}

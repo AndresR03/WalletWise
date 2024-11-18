@@ -22,8 +22,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
     };
  
     try {
-    
-        const response = await fetch('https://walletwise-1-33dw.onrender.com/register', {
+        const response = await fetch('https://walletwise-backend-p4gd.onrender.com/register', { // Nueva URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +34,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
         const result = await response.json();
         if (response.ok) {
             alert(result.message);
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'; // Redirige al inicio de sesión
         } else {
             alert(result.message); 
         }

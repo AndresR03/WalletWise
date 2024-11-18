@@ -16,10 +16,11 @@ app.use(cors());
 app.use(express.json()); 
 
 // Middleware para configurar los encabezados CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Permite cualquier origen
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.sendStatus(200);
 });
 
 // Configuración de la base de datos
@@ -135,19 +136,39 @@ app.post('/login', async (req, res) => {
 });
 
 
+
 // Ruta para guardar información financiera
-  app.post('/guardar-informacion-financiera', async (req, res) => {
+app.post('/guardar-informacion-financiera', async (req, res) => {
     const { usuario_id, salario, comida, ropa, transporte, categorias_personalizadas } = req.body;
 
     try {
         const categoriasJson = categorias_personalizadas ? JSON.stringify(categorias_personalizadas) : null;
-        await pool.query(
-            `INSERT INTO informacion_financiera 
-                (usuario_id, salario, comida, ropa, transporte, categorias_personalizadas) 
-            VALUES ($1, $2, $3, $4, $5, $6)`,
-            [usuario_id, salario, comida, ropa, transporte, categoriasJson]
+
+        // Verificar si ya existe información para el usuario
+        const existingData = await pool.query(
+            'SELECT * FROM informacion_financiera WHERE usuario_id = $1',
+            [usuario_id]
         );
-        res.json({ message: 'Información guardada exitosamente' });
+
+        if (existingData.rows.length > 0) {
+            // Actualizar la información existente
+            await pool.query(
+                `UPDATE informacion_financiera 
+                 SET salario = $2, comida = $3, ropa = $4, transporte = $5, categorias_personalizadas = $6 
+                 WHERE usuario_id = $1`,
+                [usuario_id, salario, comida, ropa, transporte, categoriasJson]
+            );
+            res.json({ message: 'Información actualizada exitosamente' });
+        } else {
+            // Insertar nueva información
+            await pool.query(
+                `INSERT INTO informacion_financiera 
+                    (usuario_id, salario, comida, ropa, transporte, categorias_personalizadas) 
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [usuario_id, salario, comida, ropa, transporte, categoriasJson]
+            );
+            res.json({ message: 'Información guardada exitosamente' });
+        }
     } catch (error) {
         console.error('Error al guardar datos:', error.message);
         res.status(500).json({ error: 'Error interno.' });
@@ -229,27 +250,25 @@ app.get('/informacion-financiera/:usuario_id', async (req, res) => {
         if (result.rows.length > 0) {
             const { comida, ropa, transporte, categorias_personalizadas } = result.rows[0];
 
-            console.log('Datos obtenidos:', { comida, ropa, transporte, categorias_personalizadas });
+            // Si categorias_personalizadas es un array de objetos, convertirlo a JSON
+            let categoriasPersonalizadasJSON = [];
+            if (Array.isArray(categorias_personalizadas)) {
+                categoriasPersonalizadasJSON = categorias_personalizadas.map(item => {
+                    return {
+                        nombre: item.nombre,
+                        valor: item.valor
+                    };
+                });
+            }
 
-            // Validar el campo categorias_personalizadas
-            const categoriasPersonalizadasJSON = categorias_personalizadas || [];
-
-            // Enviar respuesta con los datos procesados
-            res.status(200).json({
-                comida,
-                ropa,
-                transporte,
-                categorias_personalizadas: categoriasPersonalizadasJSON,
-            });
+            res.status(200).json({ comida, ropa, transporte, categorias_personalizadas: categoriasPersonalizadasJSON });
         } else {
             res.status(404).json({ message: 'No se encontró información financiera para este usuario.' });
         }
     } catch (error) {
-        console.error('Error al obtener información financiera:', error.message);
-        console.error('Consulta ejecutada:', 'SELECT comida, ropa, transporte, categorias_personalizadas FROM informacion_financiera WHERE usuario_id = $1');
+        console.error('Error al obtener información financiera:', error);
         res.status(500).json({ error: 'Error interno del servidor', details: error.message });
     }
-    
 });
 
 app.get('/porcentajes-gasto/:usuario_id', async (req, res) => {

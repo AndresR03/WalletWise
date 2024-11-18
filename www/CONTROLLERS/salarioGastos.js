@@ -1,3 +1,4 @@
+
 // Abrir y cerrar el modal
 const modal = document.getElementById('category-modal');
 const addCategoryButton = document.getElementById('add-category-button');
@@ -52,19 +53,23 @@ function addNewCategory(name) {
 document.getElementById('save-button').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    const usuarioId = 1;
+    // Obtener el ID del usuario que inició sesión
+    const usuarioId = localStorage.getItem('user_id');
+    if (!usuarioId) {
+        alert('Error: No se encontró el ID de usuario. Por favor, inicia sesión nuevamente.');
+        return;
+    }
+
     const salario = parseFloat(document.getElementById('salary').value) || 0;
     const comida = parseFloat(document.getElementById('food').value) || 0;
     const ropa = parseFloat(document.getElementById('clothes').value) || 0;
     const transporte = parseFloat(document.getElementById('transport').value) || 0;
 
     // Obtener las categorías adicionales
-    const categoriasPersonalizadas = Array.from(document.querySelectorAll('.custom-category')).map(category => {
-        return {
-            nombre: category.querySelector('label').textContent,
-            valor: parseFloat(category.querySelector('.category-value').value) || 0
-        };
-    });
+    const categoriasPersonalizadas = Array.from(document.querySelectorAll('.custom-category')).map(category => ({
+        nombre: category.querySelector('label').textContent,
+        valor: parseFloat(category.querySelector('.category-value').value) || 0,
+    }));
 
     const data = {
         usuario_id: usuarioId,
@@ -72,22 +77,21 @@ document.getElementById('save-button').addEventListener('click', async function(
         comida: comida,
         ropa: ropa,
         transporte: transporte,
-        categorias_personalizadas: categoriasPersonalizadas 
+        categorias_personalizadas: categoriasPersonalizadas,
     };
 
     try {
-        const response = await fetch('https://walletwise-1-33dw.onrender.com/guardar-informacion-financiera', {
+        // Cambiado a un endpoint dinámico
+        const response = await fetch(`https://walletwise-backend-p4gd.onrender.com/guardar-informacion-financiera`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
 
         const result = await response.json();
         if (response.ok) {
             localStorage.setItem('salario', salario);
-            alert('Información financiera guardada exitosamente');
+            alert('Información financiera guardada o actualizada exitosamente');
         } else {
             alert('Error: ' + result.error);
         }
@@ -95,11 +99,40 @@ document.getElementById('save-button').addEventListener('click', async function(
         console.error('Error al guardar la información financiera:', error);
         alert('Error al guardar la información financiera, intenta nuevamente.');
     }
+    document.getElementById('togglePassword').addEventListener('click', function () {
+    const passwordInput = document.getElementById('password');
+    const icon = this.querySelector('i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('far', 'fa-eye');
+        icon.classList.add('far', 'fa-eye-slash'); 
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('far', 'fa-eye-slash'); 
+        icon.classList.add('far', 'fa-eye'); 
+    }
+});
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordInput = document.getElementById('confirmar_password');
+        const icon = this.querySelector('i');
+    
+        if (confirmPasswordInput.type === 'password') {
+            confirmPasswordInput.type = 'text';
+            icon.classList.remove('far', 'fa-eye'); 
+            icon.classList.add('far', 'fa-eye-slash'); 
+        } else {
+            confirmPasswordInput.type = 'password';
+            icon.classList.remove('far', 'fa-eye-slash'); 
+            icon.classList.add('far', 'fa-eye'); 
+        }
+    });
+    
 
     const backButton = document.querySelector('.back-button');
     if (backButton) {
         backButton.addEventListener('click', function() {
             window.location.href = 'home.html';
-        });
-    }
+        });
+    }
 });

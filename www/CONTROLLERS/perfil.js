@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const nombreCompleto = localStorage.getItem('nombre_completo');
     const storedImageUrl = localStorage.getItem('profileImageUrl');
 
@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const profileImageInput = document.getElementById('profileImage');
     if (profileImageInput) {
-        profileImageInput.addEventListener('change', function(e) {
+        profileImageInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     if (imgElement) {
-                        imgElement.src = event.target.result; 
+                        imgElement.src = event.target.result;
                     } else {
                         console.error('No se encontró el elemento de la imagen.');
                     }
@@ -33,29 +33,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        profileImageInput.addEventListener('change', async function(e) {
+        profileImageInput.addEventListener('change', async function (e) {
             const file = e.target.files[0];
             if (file) {
                 const formData = new FormData();
                 formData.append('profileImage', file);
 
                 try {
-                    const response = await fetch('http://localhost:3000/upload-profile-picture', {
+                    const response = await fetch('https://walletwise-backend-p4gd.onrender.com/upload-profile-picture', {
                         method: 'POST',
-                        body: formData
+                        body: formData,
                     });
 
-                    const data = await response.json();
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        alert(errorData.message || 'Error al subir la imagen');
+                        return;
+                    }
 
-                    if (response.ok) {
-                        if (imgElement) {
-                            const serverImageUrl = `http://localhost:3000${data.imageUrl}`;
-                            imgElement.src = serverImageUrl; 
-                            localStorage.setItem('profileImageUrl', serverImageUrl); 
-                            alert('Foto de perfil actualizada correctamente');
-                        }
-                    } else {
-                        alert(data.message || 'Error al subir la imagen');
+                    const data = await response.json();
+                    if (imgElement) {
+                        const serverImageUrl = `https://walletwise-backend-p4gd.onrender.com${data.imageUrl}`;
+                        imgElement.src = serverImageUrl;
+                        localStorage.setItem('profileImageUrl', serverImageUrl);
+                        alert('Foto de perfil actualizada correctamente');
                     }
                 } catch (error) {
                     console.error('Error:', error);
@@ -65,14 +66,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    //cerrar sesión
+    // Cerrar sesión
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
-        logoutButton.addEventListener('click', function() {
-            localStorage.clear();
-            window.location.href = 'login.html';  // Redirige a la página de inicio de sesión
+        logoutButton.addEventListener('click', function () {
+            // Solo eliminar datos relacionados con la sesión
+            localStorage.removeItem('user_id'); // Elimina solo el ID del usuario
+            localStorage.removeItem('nombre_completo'); // Opcional, si quieres limpiar el nombre también
+
+            // Foto de perfil y salario permanecerán intactos en localStorage
+            window.location.href = 'login.html'; // Redirige a la página de inicio de sesión
         });
     }
+
     // Obtener el salario del localStorage y mostrarlo en el perfil
     const salarioElemento = document.querySelector('.salary-section p'); // Asegúrate de que este selector apunte al elemento correcto
     const salario = localStorage.getItem('salario'); // Recuperar el salario del localStorage
@@ -81,11 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
         salarioElemento.innerHTML = `<strong>Salario:</strong> ${salario}`;
     }
 
-
     const backButton = document.querySelector('.back-button');
     if (backButton) {
-        backButton.addEventListener('click', function() {
-            window.location.href = 'home.html';  // Redirige a la página home.html
+        backButton.addEventListener('click', function () {
+            window.location.href = 'home.html'; // Redirige a la página home.html
         });
     }
 });
