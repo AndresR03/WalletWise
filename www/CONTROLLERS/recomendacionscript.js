@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const colors = ['#FFCE56', '#FF6384', '#36A2EB'];
 
         categoriasPersonalizadas.forEach((categoria, index) => {
-            if (index < 5) {
+            if (index < 17) {
                 labels.push(categoria.nombre);
                 dataValues.push(parseFloat(categoria.valor) || 0);
                 colors.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);

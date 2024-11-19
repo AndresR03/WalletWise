@@ -1,4 +1,10 @@
 
+    const backButton = document.querySelector('.back-button');
+        if (backButton) {
+            backButton.addEventListener('click', function() {
+                window.location.href = 'home.html';
+            });
+        }
 // Abrir y cerrar el modal
 const modal = document.getElementById('category-modal');
 const addCategoryButton = document.getElementById('add-category-button');
@@ -82,7 +88,7 @@ document.getElementById('save-button').addEventListener('click', async function(
 
     try {
         // Cambiado a un endpoint dinámico
-        const response = await fetch(`https://walletwise-backend-p4gd.onrender.com/guardar-informacion-financiera`, {
+        const response = await fetch('https://walletwise-backend-p4gd.onrender.com/guardar-informacion-financiera', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -99,40 +105,7 @@ document.getElementById('save-button').addEventListener('click', async function(
         console.error('Error al guardar la información financiera:', error);
         alert('Error al guardar la información financiera, intenta nuevamente.');
     }
-    document.getElementById('togglePassword').addEventListener('click', function () {
-    const passwordInput = document.getElementById('password');
-    const icon = this.querySelector('i');
+   
 
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('far', 'fa-eye');
-        icon.classList.add('far', 'fa-eye-slash'); 
-    } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('far', 'fa-eye-slash'); 
-        icon.classList.add('far', 'fa-eye'); 
-    }
-});
-    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
-        const confirmPasswordInput = document.getElementById('confirmar_password');
-        const icon = this.querySelector('i');
     
-        if (confirmPasswordInput.type === 'password') {
-            confirmPasswordInput.type = 'text';
-            icon.classList.remove('far', 'fa-eye'); 
-            icon.classList.add('far', 'fa-eye-slash'); 
-        } else {
-            confirmPasswordInput.type = 'password';
-            icon.classList.remove('far', 'fa-eye-slash'); 
-            icon.classList.add('far', 'fa-eye'); 
-        }
-    });
-    
-
-    const backButton = document.querySelector('.back-button');
-    if (backButton) {
-        backButton.addEventListener('click', function() {
-            window.location.href = 'home.html';
-        });
-    }
 });

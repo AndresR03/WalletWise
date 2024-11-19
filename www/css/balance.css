@@ -1,51 +1,121 @@
+/* Configuración general */
 body {
     font-family: Arial, sans-serif;
     background-color: #1e3a8a;
     color: white;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
 }
 
-.container {
+.main-container {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
     background-color: #1e40af;
     border-radius: 10px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1000px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-x: auto; /* Permite desplazamiento horizontal */
+    gap: 20px; /* Espacio entre los elementos */
 }
 
-#chart {
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 600px; /* Ajusta el ancho máximo */
-    overflow-x: auto; /* Permite desplazamiento horizontal para el gráfico */
-}
-
+/* Botón volver */
 button {
-    padding: 5px 10px;
+    align-self: flex-start;
+    padding: 10px 20px;
     background-color: #4CAF50;
     border: none;
     border-radius: 5px;
     color: white;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
+button:hover {
+    background-color: #45a049;
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin: 0;
+}
+
+/* Gráfica */
+#chart-container {
+    width: 100%;
+    height: 60vh;
+    background-color: #1e3a8a;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    overflow-x: auto; /* Habilitar desplazamiento horizontal */
+    overflow-y: hidden; /* Ocultar desplazamiento vertical */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#chart {
+    min-width: 1000px; /* Asegura que la gráfica tenga un tamaño horizontal fijo */
+    height: 100%;
+}
+
+/* Animaciones y colores personalizados para las barras */
+.bar {
+    transition: transform 0.3s ease, fill 0.3s ease; /* Suavidad en el cambio de tamaño y color */
+    fill: #42a5f5; /* Azul claro predeterminado */
+}
+
+.bar:nth-child(2) {
+    fill: #66bb6a; /* Verde */
+}
+
+.bar:nth-child(3) {
+    fill: #ffa726; /* Naranja */
+}
+
+.bar:nth-child(4) {
+    fill: #ef5350; /* Rojo */
+}
+
+.bar:nth-child(5) {
+    fill: #ab47bc; /* Morado */
+}
+
+.bar:nth-child(6) {
+    fill: #26c6da; /* Aqua */
+}
+
+.bar:nth-child(7) {
+    fill: #d4e157; /* Lima */
+}
+
+.bar:hover {
+    transform: scale(1.1); /* Incrementa el tamaño de la barra al pasar el cursor */
+    fill: #ffd54f; /* Cambia a amarillo vibrante al pasar el cursor */
+}
+
+/* Tabla */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Permite desplazamiento horizontal */
+    max-height: 30vh; /* Ajusta la tabla al 30% de la pantalla */
+    overflow-y: auto;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background-color: #1e3a8a;
+    padding: 10px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
 table, th, td {
@@ -53,13 +123,14 @@ table, th, td {
 }
 
 th, td {
-    padding: 8px;
+    padding: 10px;
     text-align: left;
     font-size: 14px;
 }
 
 th {
     background-color: #333;
+    color: white;
 }
 
 td {
@@ -67,23 +138,40 @@ td {
     color: white;
 }
 
-img {
-    vertical-align: middle;
-    max-width: 30px;
-}
-
-/* Media Query para pantallas pequeñas */
+/* Responsividad */
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
+    #chart-container {
+        height: 50vh; /* Ajusta el tamaño de la gráfica en pantallas pequeñas */
     }
 
-    #chart {
-        max-width: 100%; /* Ocupa todo el ancho */
+    .table-container {
+        max-height: 40vh; /* Ajusta la tabla en pantallas pequeñas */
     }
 
     th, td {
         font-size: 12px;
-        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    #chart-container {
+        height: 45vh;
+    }
+
+    #chart {
+        min-width: 800px; /* Gráfica ajustada para pantallas muy pequeñas */
+    }
+
+    .table-container {
+        max-height: 35vh;
+    }
+
+    th, td {
+        font-size: 10px;
+        padding: 5px;
     }
 }

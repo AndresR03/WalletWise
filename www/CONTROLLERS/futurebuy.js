@@ -1,15 +1,16 @@
 document.getElementById("calcular").addEventListener("click", async function () {
     const precioObjetivo = parseFloat(document.getElementById("precio").value);
     const fecha = document.getElementById("fecha").value;
-    
+    const nombreObjetivo = prompt("Por favor, ingresa un nombre para este objetivo:");
+
     const usuarioId = localStorage.getItem('user_id'); // Usar el ID del usuario almacenado en localStorage
-  
+
     // Validar que los valores no sean inválidos
-    if (isNaN(precioObjetivo) || !fecha) {
+    if (isNaN(precioObjetivo) || !fecha || !nombreObjetivo) {
         alert("Por favor, ingresa todos los datos correctamente.");
         return;
     }
-  
+
     // Obtener el salario desde el backend usando la nueva ruta
     let salario;
     try {
@@ -44,7 +45,7 @@ document.getElementById("calcular").addEventListener("click", async function () 
         console.error(error);
         return;
     }
-  
+
     // Asumimos un porcentaje del salario como ahorro diario
     const porcentajeAhorro = 0.05; // Ejemplo: 5% del salario diario
     const ahorroDiario = salario * porcentajeAhorro;
@@ -52,7 +53,7 @@ document.getElementById("calcular").addEventListener("click", async function () 
     tabla.innerHTML = ''; // Limpiar resultados anteriores
     const resultadosDiv = document.getElementById("resultados");
     resultadosDiv.style.display = "block"; // Mostrar la sección de resultados
-  
+
     let acumulado = 0;
     let dia = 0; // Contador de días
 
@@ -66,26 +67,29 @@ document.getElementById("calcular").addEventListener("click", async function () 
         const columnaDia = document.createElement("td");
         const columnaAhorro = document.createElement("td");
         const columnaAcumulado = document.createElement("td");
-  
+
         columnaDia.textContent = dia;
         columnaAhorro.textContent = ahorroDiario.toFixed(2);
         columnaAcumulado.textContent = acumulado.toFixed(2);
-  
+
         fila.appendChild(columnaDia);
         fila.appendChild(columnaAhorro);
         fila.appendChild(columnaAcumulado);
-  
+
         tabla.appendChild(fila);
     }
 
     // Desplazarse hacia la parte superior de la página
     window.scrollTo({
         top: 0,
-        behavior: "smooth"
+        behavior: "smooth",
     });
 
     // Mostrar un mensaje indicando el tiempo necesario para alcanzar el objetivo
     alert(`Necesitarás ahorrar durante ${dia} días para alcanzar tu precio objetivo de ${precioObjetivo.toLocaleString()} con un ahorro diario del 5% de tu salario.`);
+
+    // Guardar el objetivo en la base de datos
+    guardarObjetivoEnBaseDeDatos(nombreObjetivo, precioObjetivo, fecha, ahorroDiario, dia, usuarioId);
 });
 
 // Botón para cerrar los resultados y ocultar la tabla
@@ -93,3 +97,33 @@ document.getElementById("cerrarResultados").addEventListener("click", function (
     const resultadosDiv = document.getElementById("resultados");
     resultadosDiv.style.display = "none"; // Ocultar la sección de resultados
 });
+
+// Función para guardar el objetivo en la base de datos
+async function guardarObjetivoEnBaseDeDatos(nombre, precioObjetivo, fecha, ahorroDiario, diasNecesarios, usuarioId) {
+    try {
+        const response = await fetch('https://walletwise-backend-p4gd.onrender.com/guardar-objetivo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                usuarioId,
+                nombre,
+                precioObjetivo,
+                fecha,
+                ahorroDiario,
+                diasNecesarios,
+            }),
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al guardar el objetivo en la base de datos');
+        }
+
+        const data = await response.json();
+        alert(data.message);
+    } catch (error) {
+        alert('No se pudo guardar el objetivo: ' + error.message);
+        console.error(error);
+    }
+}

@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vista Balance Semanal</title>
+    <title>Balance Semanal</title>
     <link rel="stylesheet" href="./css/balance.css">
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
         <button class="back-button" onclick="window.location.href='home.html'">← Volver</button>
-
-        <h1>Balance Semanal</h1>
-        
-        <!-- Gráfico -->
+        <h1 id="chart-title">Balance Semanal</h1>
         <div id="chart-container">
-            <svg id="chart" width="500" height="300"></svg>
+            <svg id="chart"></svg>
         </div>
-
-        <!-- Tabla -->
         <div class="table-container">
             <table>
                 <thead>
@@ -28,13 +23,14 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    <!-- Aquí se llenarán los datos -->
+                    <!-- Los datos se llenarán dinámicamente -->
                 </tbody>
             </table>
         </div>
     </div>
-    
+    <!-- Importa la librería D3.js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="CONTROLLERS/balance.js"></script>
+    <!-- Importa tu script balance.js -->
+    <script src="./CONTROLLERS/balance.js"></script>
 </body>
 </html>

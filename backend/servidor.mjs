@@ -214,6 +214,7 @@ app.get('/informacion-financiera-completa/:usuario_id', async (req, res) => {
 
 
 // Nueva ruta para obtener solo el salario
+// Mantener el endpoint existente para obtener el salario
 app.get('/informacion-financiera-salario2/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
 
@@ -234,6 +235,29 @@ app.get('/informacion-financiera-salario2/:usuario_id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener salario' });
     }
 });
+
+// Nuevo endpoint para guardar un objetivo
+app.post('/guardar-objetivo', async (req, res) => {
+    const { usuarioId, nombre, precioObjetivo, fecha, ahorroDiario, diasNecesarios } = req.body;
+
+    if (!usuarioId || !nombre || !precioObjetivo || !fecha || !ahorroDiario || !diasNecesarios) {
+        return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
+    }
+
+    try {
+        await pool.query(
+            'INSERT INTO objetivos (usuario_id, nombre, precio_objetivo, fecha, ahorro_diario, dias_necesarios) VALUES ($1, $2, $3, $4, $5, $6)',
+            [usuarioId, nombre, precioObjetivo, fecha, ahorroDiario, diasNecesarios]
+        );
+        res.status(200).json({ message: 'Objetivo guardado exitosamente' });
+    } catch (error) {
+        console.error('Error al guardar el objetivo:', error);
+        res.status(500).json({ error: 'Error al guardar el objetivo' });
+    }
+});
+
+
+
 // Ruta para obtener información financiera solo para el gráfico de pastel
 app.get('/informacion-financiera/:usuario_id', async (req, res) => {
     const { usuario_id } = req.params;
