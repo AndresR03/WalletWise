@@ -9,7 +9,7 @@ async function obtenerDatosYGenerarGrafico() {
         }
 
         // Realizar la solicitud al backend para obtener los datos financieros
-        const response = await fetch(`https://walletwise-backend-p4gd.onrender.com/informacion-financiera/${userId}`, {
+        const response = await fetch(`http://localhost:3000/informacion-financiera/${userId}`, { // Cambiado a localhost
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

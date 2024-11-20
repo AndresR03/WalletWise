@@ -8,9 +8,13 @@
 </head>
 <body>
   <div class="container">
+    <!-- Enlace de regreso -->
     <a href="home.html" class="back">Volver</a>
+
+    <!-- Título principal -->
     <h1>Compras Futuras</h1>
     
+    <!-- Formulario de ingreso -->
     <form id="formulario">
       <label for="nombre">Nombre del objetivo</label>
       <input type="text" id="nombre" name="nombre" placeholder="Ingresa un nombre para el objetivo">
@@ -24,12 +28,14 @@
       <button type="button" id="calcular">CALCULAR</button>
     </form>
 
+    <!-- Resultados calculados -->
     <div id="resultados" style="display: none;">
+      <h2>Resultados del Ahorro</h2>
       <table>
         <thead>
           <tr>
             <th>Día</th>
-            <th>Ahorro diario</th>
+            <th>Ahorro Diario</th>
             <th>Acumulado</th>
           </tr>
         </thead>
@@ -39,8 +45,28 @@
       </table>
       <button type="button" id="cerrarResultados">Listo</button>
     </div>
+
+    <!-- Sección para mostrar objetivos guardados -->
+    <div id="objetivos-guardados">
+      <h2>Objetivos Guardados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio Objetivo</th>
+            <th>Fecha</th>
+            <th>Ahorro Diario</th>
+            <th>Días Necesarios</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-objetivos">
+          <!-- Aquí se llenarán los objetivos guardados -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
+  <!-- Script principal -->
   <script src="CONTROLLERS/futurebuy.js"></script>
 </body>
 </html>

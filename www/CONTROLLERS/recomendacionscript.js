@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Ajustar el fetch para usar el endpoint actualizado
-        const response = await fetch(`https://walletwise-backend-p4gd.onrender.com/informacion-financiera/${usuarioId}`, {
+        const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

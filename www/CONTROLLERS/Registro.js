@@ -22,7 +22,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
     };
  
     try {
-        const response = await fetch('https://walletwise-1-vvkp.onrender.com/register', { // Nueva URL
+        const response = await fetch('http://localhost:3000/register', { // Nueva URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

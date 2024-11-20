@@ -30,9 +30,7 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    ssl: {
-        rejectUnauthorized: false, // Necesario para Render o servicios con SSL
-    },
+
 });
 
 // Verificar la conexión a la base de datos
@@ -261,6 +259,50 @@ app.post('/guardar-objetivo', async (req, res) => {
         res.status(500).json({ error: 'Error al guardar el objetivo' });
     }
 });
+
+// Endpoint para obtener todos los objetivos de un usuario
+app.get('/objetivos/:usuarioId', async (req, res) => {
+    try {
+        const usuarioId = parseInt(req.params.usuarioId);
+        if (isNaN(usuarioId)) {
+            return res.status(400).json({ message: 'El ID de usuario no es válido.' });
+        }
+
+        const objetivos = await db.query(
+            'SELECT * FROM objetivos WHERE usuario_id = $1',
+            [usuarioId]
+        );
+
+        if (objetivos.rows.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron objetivos para este usuario.' });
+        }
+
+        res.status(200).json(objetivos.rows);
+    } catch (error) {
+        console.error('Error al obtener los objetivos:', error);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+});
+
+
+// Endpoint para eliminar un objetivo
+app.delete('/objetivos/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query('DELETE FROM objetivos WHERE id = $1 RETURNING *', [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Objetivo no encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Objetivo eliminado exitosamente.' });
+    } catch (error) {
+        console.error('Error al eliminar el objetivo:', error);
+        res.status(500).json({ message: 'Error al eliminar el objetivo.' });
+    }
+});
+
 
 
 

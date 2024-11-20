@@ -5,23 +5,20 @@ document.getElementById("calcular").addEventListener("click", async function () 
 
     const usuarioId = localStorage.getItem('user_id'); // Usar el ID del usuario almacenado en localStorage
 
-    // Validar que los valores no sean inválidos
     if (isNaN(precioObjetivo) || !fecha || !nombreObjetivo) {
         alert("Por favor, ingresa todos los datos correctamente.");
         return;
     }
 
-    // Obtener el salario desde el backend usando la nueva ruta
     let salario;
     try {
-        const response = await fetch(`https://walletwise-backend-p4gd.onrender.com/informacion-financiera-salario2/${usuarioId}`, {
+        const response = await fetch(`http://localhost:3000/informacion-financiera-salario2/${usuarioId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
 
-        // Validar la respuesta del servidor
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || 'Error al obtener los datos del salario');
@@ -29,11 +26,9 @@ document.getElementById("calcular").addEventListener("click", async function () 
 
         const data = await response.json();
 
-        // Verifica si el salario es válido
         if (data.salario) {
             salario = parseFloat(data.salario);
 
-            // Validar si el salario obtenido es un número
             if (isNaN(salario)) {
                 throw new Error('El salario recibido no es un número válido');
             }
@@ -46,23 +41,20 @@ document.getElementById("calcular").addEventListener("click", async function () 
         return;
     }
 
-    // Asumimos un porcentaje del salario como ahorro diario
-    const porcentajeAhorro = 0.05; // Ejemplo: 5% del salario diario
+    const porcentajeAhorro = 0.05;
     const ahorroDiario = salario * porcentajeAhorro;
     const tabla = document.getElementById("tabla-resultado");
-    tabla.innerHTML = ''; // Limpiar resultados anteriores
+    tabla.innerHTML = '';
     const resultadosDiv = document.getElementById("resultados");
-    resultadosDiv.style.display = "block"; // Mostrar la sección de resultados
+    resultadosDiv.style.display = "block";
 
     let acumulado = 0;
-    let dia = 0; // Contador de días
+    let dia = 0;
 
-    // Cálculo dinámico hasta alcanzar el precio objetivo
     while (acumulado < precioObjetivo) {
-        dia++; // Incrementar el día
+        dia++;
         acumulado += ahorroDiario;
 
-        // Crear la fila para los días antes de alcanzar el precio objetivo
         const fila = document.createElement("tr");
         const columnaDia = document.createElement("td");
         const columnaAhorro = document.createElement("td");
@@ -79,29 +71,24 @@ document.getElementById("calcular").addEventListener("click", async function () 
         tabla.appendChild(fila);
     }
 
-    // Desplazarse hacia la parte superior de la página
     window.scrollTo({
         top: 0,
         behavior: "smooth",
     });
 
-    // Mostrar un mensaje indicando el tiempo necesario para alcanzar el objetivo
     alert(`Necesitarás ahorrar durante ${dia} días para alcanzar tu precio objetivo de ${precioObjetivo.toLocaleString()} con un ahorro diario del 5% de tu salario.`);
 
-    // Guardar el objetivo en la base de datos
     guardarObjetivoEnBaseDeDatos(nombreObjetivo, precioObjetivo, fecha, ahorroDiario, dia, usuarioId);
 });
 
-// Botón para cerrar los resultados y ocultar la tabla
 document.getElementById("cerrarResultados").addEventListener("click", function () {
     const resultadosDiv = document.getElementById("resultados");
-    resultadosDiv.style.display = "none"; // Ocultar la sección de resultados
+    resultadosDiv.style.display = "none";
 });
 
-// Función para guardar el objetivo en la base de datos
 async function guardarObjetivoEnBaseDeDatos(nombre, precioObjetivo, fecha, ahorroDiario, diasNecesarios, usuarioId) {
     try {
-        const response = await fetch('https://walletwise-backend-p4gd.onrender.com/guardar-objetivo', {
+        const response = await fetch('http://localhost:3000/guardar-objetivo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,15 +102,68 @@ async function guardarObjetivoEnBaseDeDatos(nombre, precioObjetivo, fecha, ahorr
                 diasNecesarios,
             }),
         });
-        
+
         if (!response.ok) {
             throw new Error('Error al guardar el objetivo en la base de datos');
         }
 
         const data = await response.json();
         alert(data.message);
+        cargarObjetivosGuardados();
     } catch (error) {
         alert('No se pudo guardar el objetivo: ' + error.message);
         console.error(error);
     }
 }
+
+async function cargarObjetivosGuardados() {
+    const usuarioId = localStorage.getItem("user_id");
+
+    if (!usuarioId) {
+        alert("Usuario no identificado. Por favor, inicia sesión nuevamente.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/objetivos/${usuarioId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al obtener los objetivos guardados.");
+        }
+
+        const objetivos = await response.json();
+
+        const tabla = document.getElementById("tabla-objetivos");
+        tabla.innerHTML = "";
+
+        objetivos.forEach((objetivo) => {
+            if (!objetivo.id) {
+                console.warn(`El objetivo "${objetivo.nombre}" no tiene un ID válido y será ignorado.`);
+                return; // Ignorar registros sin ID válido
+            }
+
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${objetivo.nombre || "Sin nombre"}</td>
+                <td>${parseFloat(objetivo.precio_objetivo || 0).toLocaleString()}</td>
+                <td>${new Date(objetivo.fecha).toLocaleDateString()}</td>
+                <td>${parseFloat(objetivo.ahorro_diario || 0).toFixed(2)}</td>
+                <td>${parseInt(objetivo.dias_necesarios || 0)}</td>
+            `;
+
+            tabla.appendChild(fila);
+        });
+    } catch (error) {
+        console.error("Error al cargar los objetivos guardados:", error);
+        alert("No se pudieron cargar los objetivos guardados.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    cargarObjetivosGuardados();
+});

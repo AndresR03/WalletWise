@@ -88,7 +88,7 @@ document.getElementById('save-button').addEventListener('click', async function(
 
     try {
         // Cambiado a un endpoint dinámico
-        const response = await fetch('https://walletwise-backend-p4gd.onrender.com/guardar-informacion-financiera', {
+        const response = await fetch('http://localhost:3000/guardar-informacion-financiera', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),

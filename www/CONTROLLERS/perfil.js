@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 formData.append('profileImage', file);
 
                 try {
-                    const response = await fetch('https://walletwise-backend-p4gd.onrender.com/upload-profile-picture', {
+                    const response = await fetch('http://localhost:3000/upload-profile-picture', {
                         method: 'POST',
                         body: formData,
                     });
