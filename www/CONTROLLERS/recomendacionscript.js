@@ -2,14 +2,14 @@ function goBack() {
     window.history.back();
 }
 document.addEventListener('DOMContentLoaded', async () => {
-    const usuarioId = localStorage.getItem('user_id'); // Obtener el ID del usuario desde localStorage
+    const usuarioId = localStorage.getItem('user_id'); 
     if (!usuarioId) {
         console.error('No se ha encontrado la ID del usuario.');
         return;
     }
 
     try {
-        // Ajustar el fetch para usar el endpoint actualizado
+        
         const response = await fetch(`http://localhost:3000/informacion-financiera/${usuarioId}`, {
             method: 'GET',
             headers: {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Verifica los datos recibidos
+        
         console.log('Datos recibidos:', data);
 
         const transporte = parseFloat(data.transporte) || 0;

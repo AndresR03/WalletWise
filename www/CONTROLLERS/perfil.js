@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.removeItem('nombre_completo'); // Opcional, si quieres limpiar el nombre también
 
             // Foto de perfil y salario permanecerán intactos en localStorage
-            window.location.href = 'login.html'; // Redirige a la página de inicio de sesión
+            window.location.href = 'login.html'; 
         });
     }
 

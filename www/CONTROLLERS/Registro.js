@@ -11,7 +11,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
     // Verifica el estado del checkbox
     const aceptarTerminos = document.querySelector('input[name="aceptar_terminos"]').checked;
 
-    // Crear el objeto con los datos a enviar
+    // Crear el objeto 
     const data = {
         nombre_completo: nombreCompleto,
         correo_electronico: correoElectronico,
@@ -22,7 +22,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
     };
  
     try {
-        const response = await fetch('http://localhost:3000/register', { // Nueva URL
+        const response = await fetch('http://localhost:3000/register', { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
         const result = await response.json();
         if (response.ok) {
             alert(result.message);
-            window.location.href = 'index.html'; // Redirige al inicio de sesión
+            window.location.href = 'index.html'; 
         } else {
             alert(result.message); 
         }

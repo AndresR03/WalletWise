@@ -9,7 +9,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-dotenv.config(); // Carga las variables de entorno desde el archivo .env
+dotenv.config();
 
 const app = express();
 app.use(cors()); 
@@ -264,11 +264,12 @@ app.post('/guardar-objetivo', async (req, res) => {
 app.get('/objetivos/:usuarioId', async (req, res) => {
     try {
         const usuarioId = parseInt(req.params.usuarioId);
+
         if (isNaN(usuarioId)) {
             return res.status(400).json({ message: 'El ID de usuario no es válido.' });
         }
 
-        const objetivos = await db.query(
+        const objetivos = await pool.query(
             'SELECT * FROM objetivos WHERE usuario_id = $1',
             [usuarioId]
         );
@@ -284,24 +285,6 @@ app.get('/objetivos/:usuarioId', async (req, res) => {
     }
 });
 
-
-// Endpoint para eliminar un objetivo
-app.delete('/objetivos/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const result = await pool.query('DELETE FROM objetivos WHERE id = $1 RETURNING *', [id]);
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'Objetivo no encontrado.' });
-        }
-
-        res.status(200).json({ message: 'Objetivo eliminado exitosamente.' });
-    } catch (error) {
-        console.error('Error al eliminar el objetivo:', error);
-        res.status(500).json({ message: 'Error al eliminar el objetivo.' });
-    }
-});
 
 
 

@@ -8,10 +8,12 @@
 </head>
 <body>
     <div class="main-container">
-        <button class="back-button" onclick="window.location.href='home.html'">← Volver</button>
-        <h1 id="chart-title">Balance Semanal</h1>
-        <div id="chart-container">
-            <svg id="chart"></svg>
+        <button class="back-button" onclick="goBack()">← Volver</button>
+        <h1 id="chart-title">Balance Semanal de Gastos</h1>
+        <div class="card">
+            <div id="chart-container">
+                <svg id="chart"></svg>
+            </div>
         </div>
         <div class="table-container">
             <table>
@@ -23,14 +25,14 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    <!-- Los datos se llenarán dinámicamente -->
+                    
                 </tbody>
             </table>
         </div>
     </div>
-    <!-- Importa la librería D3.js -->
+    
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <!-- Importa tu script balance.js -->
+   
     <script src="./CONTROLLERS/balance.js"></script>
 </body>
 </html>

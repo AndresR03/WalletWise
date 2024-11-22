@@ -10,7 +10,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     }
 
     try {
-        const response = await fetch('http://localhost:3000/login', { // Cambiado a localhost
+        const response = await fetch('http://localhost:3000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -40,5 +40,20 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     } catch (error) {
         console.error('Error de conexión:', error);
         alert('Hubo un error al conectar con el servidor.');
+    }
+    
+});
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
+
+togglePassword.addEventListener('click', function () {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+
+    // Cambiar el ícono de ojo
+    const icon = this.querySelector('i');
+    if (icon) {
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
     }
 });

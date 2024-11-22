@@ -5,12 +5,12 @@ body {
   color: white;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;
+  min-height: 100vh;
   margin: 0;
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; /* Permitir scroll solo vertical si es necesario */
+  overflow-y: auto;
 }
 
 /* Ajustar el contenedor principal */
@@ -27,18 +27,39 @@ body {
   align-items: center;
 }
 
+/* Enlace de regreso */
+.back {
+  align-self: flex-start;
+  color: #ffcc00;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
 /* Título principal */
 h1 {
   color: #ffffff;
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 15px;
+  font-size: 1.5rem; /* Reducir tamaño */
+  margin-bottom: 10px;
+}
+
+/* Subtítulos (Objetivos Guardados) */
+h2 {
+  font-size: 1.2rem; /* Reducir subtítulo */
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 10px; /* Espacio debajo del subtítulo */
 }
 
 /* Etiquetas */
 label {
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin-top: 10px;
   display: block;
   text-align: left;
@@ -48,9 +69,9 @@ label {
 /* Campos de entrada */
 input {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   margin-top: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   border: none;
   border-radius: 5px;
   box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.2);
@@ -61,11 +82,11 @@ button {
   background-color: #ffcc00;
   color: black;
   border: none;
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.9rem; /* Reducir tamaño de fuente */
   transition: background-color 0.3s;
 }
 
@@ -76,15 +97,15 @@ button:hover {
 /* Tablas */
 table {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px; /* Reducir margen superior */
   border-collapse: collapse;
+  font-size: 0.75rem; /* Reducir tamaño de texto */
 }
 
 th,
 td {
   border: 1px solid #1e40af;
-  padding: 10px;
-  font-size: 0.9rem;
+  padding: 6px; /* Reducir padding */
   text-align: center;
 }
 
@@ -99,59 +120,32 @@ td {
   color: #ffffff;
 }
 
-/* Estilo responsivo para pantallas pequeñas */
+/* Hacer la tabla responsiva */
 @media (max-width: 768px) {
-  .container {
-    align-items: center;
-    width: 95%;
-    padding: 15px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  input,
-  button {
-    font-size: 0.9rem;
-    padding: 8px;
-  }
-
-  /* Tabla responsiva */
   table {
     display: block;
-    overflow-x: auto; /* Permitir scroll horizontal solo para la tabla */
+    overflow-x: auto; /* Agregar scroll horizontal */
     white-space: nowrap; /* Evitar que las celdas se ajusten en múltiples líneas */
   }
 
   th,
   td {
-    font-size: 0.8rem;
-    padding: 8px;
+    font-size: 0.7rem; /* Reducir tamaño de texto */
+    padding: 5px; /* Reducir padding */
   }
 }
 
 @media (max-width: 480px) {
-  h1 {
-    font-size: 1.3rem;
-  }
-
-  input,
-  button {
-    font-size: 0.8rem;
-    padding: 6px;
+  table {
+    font-size: 0.65rem; /* Reducir aún más el tamaño de fuente */
   }
 
   th,
   td {
-    font-size: 0.7rem;
-    padding: 6px;
+    padding: 4px; /* Reducir padding */
   }
 
-  /* Ajustar la tabla para que ocupe todo el ancho */
-  table {
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
+  h2 {
+    font-size: 1rem; /* Reducir subtítulo en pantallas muy pequeñas */
   }
 }
