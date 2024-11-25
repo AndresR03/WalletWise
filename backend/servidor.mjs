@@ -19,6 +19,13 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Cambiar '*' por el dominio permitido
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.sendStatus(200);
+});
+
 
 app.use(express.json()); 
 
@@ -43,6 +50,9 @@ pool.connect((err) => {
 
 // Ruta para registrar usuario
 app.post('/register', async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Cambiar '*' por 'http://127.0.0.1:5501' si es necesario
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
     const { 
         nombre_completo, 
         correo_electronico, 

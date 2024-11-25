@@ -22,7 +22,7 @@ document.getElementById('registro-form').addEventListener('submit', async functi
     };
  
     try {
-        const response = await fetch('https://wallet-1-94081f7e1774.herokuapp.com/', { 
+        const response = await fetch('https://wallet-1-94081f7e1774.herokuapp.com/register', { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
