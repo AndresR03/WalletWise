@@ -12,16 +12,15 @@ import fs from 'fs';
 dotenv.config();
 
 const app = express();
-app.use(cors()); 
-app.use(express.json()); 
 
-// Middleware para configurar los encabezados CORS
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.sendStatus(200);
-});
+// Configuración de CORS
+app.use(cors({
+    origin: '*', // Cambiar * por el dominio exacto si es necesario, por ejemplo: 'https://tudominio.com'
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+}));
+
+app.use(express.json()); 
 
 // Configuración de la base de datos
 const pool = new Pool({
@@ -30,7 +29,7 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-
+    ssl: { rejectUnauthorized: false }, // Habilitar SSL para Heroku
 });
 
 // Verificar la conexión a la base de datos
@@ -53,19 +52,16 @@ app.post('/register', async (req, res) => {
         aceptar_terminos 
     } = req.body;
 
-    // Validación de campos
     if (!nombre_completo || !correo_electronico || !numero_telefono || !password || !confirmar_password) {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
-    // Validación con la función personalizada
     const validation = validarUsuario(req.body);
     if (!validation.valid) {
         return res.status(400).json({ message: validation.message });
     }
 
     try {
-        // Comprobar si el usuario ya existe
         const existingUser = await pool.query(
             'SELECT * FROM usuarios WHERE correo_electronico = $1 OR numero_telefono = $2',
             [correo_electronico, numero_telefono]
@@ -79,10 +75,8 @@ app.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Las contraseñas no coinciden' });
         }
 
-        // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insertar el usuario en la base de datos
         const result = await pool.query(
             'INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, password, aceptar_terminos) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [nombre_completo, correo_electronico, numero_telefono, hashedPassword, aceptar_terminos]
@@ -99,13 +93,11 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { correo_electronico, password } = req.body;
 
-    // Validar que los campos sean enviados
     if (!correo_electronico || !password) {
         return res.status(400).json({ message: 'Correo y contraseña son obligatorios.' });
     }
 
     try {
-        // Buscar al usuario en la base de datos
         const result = await pool.query(
             'SELECT * FROM usuarios WHERE correo_electronico = $1',
             [correo_electronico]
@@ -117,13 +109,11 @@ app.post('/login', async (req, res) => {
 
         const user = result.rows[0];
 
-        // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Contraseña incorrecta.' });
         }
 
-        // Devolver los datos del usuario
         res.status(200).json({
             message: 'Inicio de sesión exitoso',
             usuario: {
@@ -137,7 +127,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
-
 
 
 
